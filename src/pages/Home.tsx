@@ -8,8 +8,8 @@ import {
 } from 'lucide-react';
 
 const sliderImages = [
-  '/image/Toàn cảnh-12.png',
-  '/image/Toàn cảnh-13.png',
+  `${import.meta.env.BASE_URL}image/Toàn cảnh-12.png`,
+  `${import.meta.env.BASE_URL}image/Toàn cảnh-13.png`,
 ];
 
 const stats = [
@@ -107,7 +107,7 @@ export default function Home() {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <img 
-              src="/image/fb11a904-0e59-47d1-abfa-e5b80a29d688.jpg" 
+              src={`${import.meta.env.BASE_URL}image/fb11a904-0e59-47d1-abfa-e5b80a29d688.jpg`} 
               alt="D-Park Group Logo" 
               className="h-16 md:h-20 lg:h-24 w-auto object-contain transition-transform hover:scale-105" 
             />
@@ -853,7 +853,7 @@ export default function Home() {
           <div className="space-y-6">
             <Link to="/" className="flex items-center">
               <img 
-                src="/image/logo demo.png" 
+                src={`${import.meta.env.BASE_URL}image/logo demo.png`} 
                 alt="D-Park Group Logo" 
                 className="h-20 md:h-24 w-auto object-contain transition-transform hover:scale-105" 
               />
