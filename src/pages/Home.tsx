@@ -306,7 +306,7 @@ export default function Home() {
             </div>
             <div className="relative">
               <div className="rounded-[40px] overflow-hidden shadow-2xl">
-                <img src="https://picsum.photos/seed/vision/800/600" alt="Tầm nhìn dự án" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                <img src={`${import.meta.env.BASE_URL}image/page_019.png`} alt="Tầm nhìn dự án" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               </div>
               <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-cyan-500 rounded-3xl -z-10" />
             </div>
@@ -327,7 +327,7 @@ export default function Home() {
                   className="relative z-10 rounded-[40px] overflow-hidden shadow-2xl border-8 border-white"
                 >
                   <img 
-                    src="https://picsum.photos/seed/map-location/800/600" 
+                    src={`${import.meta.env.BASE_URL}image/page_002.png`} 
                     alt="Vị trí dự án" 
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
@@ -475,7 +475,7 @@ export default function Home() {
             <div className="lg:w-1/2">
               <div className="rounded-[40px] overflow-hidden shadow-2xl border-4 border-white/10">
                 <img 
-                  src="https://picsum.photos/seed/industrial-layout/800/800" 
+                  src={`${import.meta.env.BASE_URL}image/part3.png`} 
                   alt="Quy hoạch KCN" 
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
@@ -581,7 +581,7 @@ export default function Home() {
             <div className="lg:w-1/2">
               <div className="relative">
                 <div className="rounded-[40px] overflow-hidden shadow-2xl">
-                  <img src="https://picsum.photos/seed/utilities/800/600" alt="Tiện ích dự án" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  <img src={`${import.meta.env.BASE_URL}image/Dr.Watermark_Gemini_1776088057732.jpg`} alt="Tiện ích dự án" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                 </div>
                 <div className="absolute -top-6 -left-6 w-24 h-24 bg-cyan-500 rounded-full blur-2xl opacity-20" />
               </div>
@@ -704,9 +704,9 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { title: 'Khởi công xây dựng hạ tầng kỹ thuật Giai đoạn 1', date: '15/03/2024', image: 'https://picsum.photos/seed/news1/800/600', category: 'Sự kiện' },
-              { title: 'D-PARK GROUP ký kết hợp tác chiến lược cùng Nippon Koei', date: '10/02/2024', image: 'https://picsum.photos/seed/news2/800/600', category: 'Hợp tác' },
-              { title: 'Bắc Giang dẫn đầu cả nước về tốc độ tăng trưởng GRDP', date: '05/01/2024', image: 'https://picsum.photos/seed/news3/800/600', category: 'Thị trường' },
+              { title: 'Khởi công xây dựng hạ tầng kỹ thuật Giai đoạn 1', date: '15/03/2024', image: `${import.meta.env.BASE_URL}image/Dr.Watermark_Gemini_1776088057732.jpg`, category: 'Sự kiện' },
+              { title: 'D-PARK GROUP ký kết hợp tác chiến lược cùng Nippon Koei', date: '10/02/2024', image: `${import.meta.env.BASE_URL}image/Dr.Watermark_Gemini_1776088057732.jpg`, category: 'Hợp tác' },
+              { title: 'Bắc Giang dẫn đầu cả nước về tốc độ tăng trưởng GRDP', date: '05/01/2024', image: `${import.meta.env.BASE_URL}image/Dr.Watermark_Gemini_1776088057732.jpg`, category: 'Thị trường' },
             ].map((news, index) => (
               <motion.div
                 key={news.title}
