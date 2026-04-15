@@ -108,7 +108,7 @@ export default function Home() {
           {/* Logo */}
           <Link to="/" className="flex items-center">
                 <img 
-        src={`${import.meta.env.BASE_URL}image/logocongty.png`} 
+        src={`${import.meta.env.BASE_URL}image/logocongty.avif`} 
         alt="D-Park Group Logo" 
 className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto object-contain transition-all duration-300 hover:scale-${isScrolled ? '102' : '105'}`} 
       />
