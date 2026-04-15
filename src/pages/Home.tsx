@@ -8,8 +8,8 @@ import {
 } from 'lucide-react';
 
 const sliderImages = [
-  `${import.meta.env.BASE_URL}image/Toàn cảnh-12.png`,
-  `${import.meta.env.BASE_URL}image/Toàn cảnh-13.png`,
+  `${import.meta.env.BASE_URL}image/Toàn cảnh-12.avif`,
+  `${import.meta.env.BASE_URL}image/Toàn cảnh-13.avif`,
 ];
 
 const stats = [
@@ -308,7 +308,7 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
             </div>
             <div className="relative">
               <div className="rounded-[40px] overflow-hidden shadow-2xl">
-                <img src={`${import.meta.env.BASE_URL}image/AIComplex_1776166732689.png`} alt="Tầm nhìn dự án" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                <img src={`${import.meta.env.BASE_URL}image/AIComplex_1776166732689.avif`} alt="Tầm nhìn dự án" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               </div>
               <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-cyan-500 rounded-3xl -z-10" />
             </div>
@@ -329,7 +329,7 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
                   className="relative z-10 rounded-[40px] overflow-hidden shadow-2xl border-8 border-white"
                 >
                   <img 
-                    src={`${import.meta.env.BASE_URL}image/AIComplex_1776167182236.png`} 
+                    src={`${import.meta.env.BASE_URL}image/AIComplex_1776167182236.avif`} 
                     alt="Vị trí dự án" 
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
@@ -477,7 +477,7 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
             <div className="lg:w-1/2">
               <div className="rounded-[40px] overflow-hidden shadow-2xl border-4 border-white/10">
                 <img 
-                  src={`${import.meta.env.BASE_URL}image/AIComplex_1776166839889.png`} 
+                  src={`${import.meta.env.BASE_URL}image/AIComplex_1776166839889.avif`} 
                   alt="Quy hoạch KCN" 
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
@@ -583,7 +583,7 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
             <div className="lg:w-1/2">
               <div className="relative">
                 <div className="rounded-[40px] overflow-hidden shadow-2xl">
-                  <img src={`${import.meta.env.BASE_URL}image/AIComplex_1776166944793.png`} alt="Tiện ích dự án" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  <img src={`${import.meta.env.BASE_URL}image/AIComplex_1776166944793.avif`} alt="Tiện ích dự án" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                 </div>
                 <div className="absolute -top-6 -left-6 w-24 h-24 bg-cyan-500 rounded-full blur-2xl opacity-20" />
               </div>
@@ -706,9 +706,9 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { title: 'Khởi công xây dựng hạ tầng kỹ thuật Giai đoạn 1', date: '15/03/2024', image: `${import.meta.env.BASE_URL}image/AIComplex_1776166944793.png`, category: 'Sự kiện' },
-              { title: 'D-PARK GROUP ký kết hợp tác chiến lược cùng Nippon Koei', date: '10/02/2024', image: `${import.meta.env.BASE_URL}image/AIComplex_1776166944793.png`, category: 'Hợp tác' },
-              { title: 'Bắc Giang dẫn đầu cả nước về tốc độ tăng trưởng GRDP', date: '05/01/2024', image: `${import.meta.env.BASE_URL}image/AIComplex_1776166944793.png`, category: 'Thị trường' },
+              { title: 'Khởi công xây dựng hạ tầng kỹ thuật Giai đoạn 1', date: '15/03/2024', image: `${import.meta.env.BASE_URL}image/AIComplex_1776166944793.avif`, category: 'Sự kiện' },
+              { title: 'D-PARK GROUP ký kết hợp tác chiến lược cùng Nippon Koei', date: '10/02/2024', image: `${import.meta.env.BASE_URL}image/AIComplex_1776166944793.avif`, category: 'Hợp tác' },
+              { title: 'Bắc Giang dẫn đầu cả nước về tốc độ tăng trưởng GRDP', date: '05/01/2024', image: `${import.meta.env.BASE_URL}image/AIComplex_1776166944793.avif`, category: 'Thị trường' },
             ].map((news, index) => (
               <motion.div
                 key={news.title}
