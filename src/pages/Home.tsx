@@ -102,16 +102,17 @@ export default function Home() {
       </div>
 
       {/* Main Header */}
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+<header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
+  <div className={`container mx-auto px-4 py-${isScrolled ? '2' : '4'} flex justify-between items-center transition-all duration-300`}>
+
           {/* Logo */}
           <Link to="/" className="flex items-center">
                 <img 
         src={`${import.meta.env.BASE_URL}image/logocongty.png`} 
         alt="D-Park Group Logo" 
-className="h-12 md:h-16 lg:h-20 w-auto object-contain transition-transform hover:scale-105" 
-
+className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto object-contain transition-all duration-300 hover:scale-${isScrolled ? '102' : '105'}`} 
       />
+
           </Link>
 
           {/* Desktop Nav */}
