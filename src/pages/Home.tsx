@@ -1218,7 +1218,7 @@ export default function Home() {
         </AnimatePresence>
 
         <div className="relative group">
-          <div className="absolute bottom-full right-0 mb-4 w-64 sm:w-72 bg-white rounded-3xl shadow-2xl border border-slate-100 p-5 sm:p-6 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+          <div className="absolute bottom-full right-0 mb-4 w-64 sm:w-72 bg-white rounded-3xl shadow-2xl border border-slate-100 p-5 sm:p-6 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300" style={{ paddingRight: 26 }}>
             <h4 className="font-bold text-slate-900 mb-3 sm:mb-4 flex items-center gap-2 text-sm sm:text-base">
               <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-500" />
               {t.floatingInfo.title}
