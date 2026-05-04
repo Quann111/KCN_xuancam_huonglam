@@ -11,3 +11,7 @@
     @apply font-sans antialiased;
   }
 }
+
+header nav.hidden {
+  width: 1292px;
+}

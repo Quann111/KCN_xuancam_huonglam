@@ -6,35 +6,74 @@ import {
   ChevronLeft, ChevronRight, Droplets, Waves, Globe, Plane, 
   Ship, CheckCircle2, Phone, Mail, MapPin, Menu, X, ChevronUp, Search
 } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
+import { Language } from '../translations';
 
 const sliderImages = [
   `${import.meta.env.BASE_URL}image/Toàn cảnh-12.avif`,
   `${import.meta.env.BASE_URL}image/Toàn cảnh-13.avif`,
 ];
 
-const stats = [
-  { label: 'Quy mô (GĐ1)', value: '102,85 ha', icon: Map, color: 'bg-blue-500' },
-  { label: 'Vốn đầu tư', value: '1.467,5 tỷ VNĐ', icon: DollarSign, color: 'bg-pink-500' },
-  { label: 'Thời hạn đến', value: 'Năm 2075', icon: Clock, color: 'bg-slate-700' },
-  { label: 'Lao động dự kiến', value: '4.500 người', icon: Users, color: 'bg-orange-500' },
-];
-
 const navItems = [
-  { name: 'VỊ TRÍ', id: 'vi-tri' },
-  { name: 'HẠ TẦNG', id: 'ha-tang' },
-  { name: 'QUY MÔ & NGÀNH NGHỀ', id: 'quy-mo' },
-  { name: 'CHI PHÍ & ƯU ĐÃI', id: 'chi-phi-uu-dai' },
-  { name: 'TIỆN ÍCH', id: 'tien-ich' },
-  { name: 'QUY TRÌNH', id: 'quy-trinh' },
-  { name: 'HỖ TRỢ', id: 'ho-tro' },
-  { name: 'TIN TỨC', id: 'tin-tuc' },
-  { name: 'TUYỂN DỤNG', id: 'tuyen-dung' },
+  { name: 'viTri', id: 'vi-tri' },
+  { name: 'haTang', id: 'ha-tang' },
+  { name: 'quyMo', id: 'quy-mo' },
+  { name: 'chiPhi', id: 'chi-phi-uu-dai' },
+  { name: 'tienIch', id: 'tien-ich' },
+  { name: 'quyTrinh', id: 'quy-trinh' },
+  { name: 'hoTro', id: 'ho-tro' },
+  { name: 'tinTuc', id: 'tin-tuc' },
+  { name: 'tuyenDung', id: 'tuyen-dung' },
+  { name: 'lienHe', id: 'lien-he' },
 ];
 
 export default function Home() {
+  const { language, setLanguage, t } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLangOpen, setIsLangOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('');
+
+  const stats = [
+    { label: t.stats.scale, value: '102,85 ha', icon: Map, color: 'bg-blue-500' },
+    { label: t.stats.investment, value: '1.467,5 tỷ VNĐ', icon: DollarSign, color: 'bg-pink-500' },
+    { label: t.stats.deadline, value: 'Năm 2075', icon: Clock, color: 'bg-slate-700' },
+    { label: t.stats.labor, value: '4.500 người', icon: Users, color: 'bg-orange-500' },
+  ];
+
+  const languages = [
+    { 
+      code: 'vi' as Language, 
+      name: 'Tiếng Việt', 
+      flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/vi.svg',
+      flagCode: 'vi',
+      href: '#'
+    },
+    { 
+      code: 'ja' as Language, 
+      name: 'Tiếng Nhật', 
+      flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/ja.svg',
+      flagCode: 'jp',
+      href: '#'
+    },
+    { 
+      code: 'zh' as Language, 
+      name: 'Tiếng Trung', 
+      flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/zh-hant.svg',
+      flagCode: 'cn',
+      href: '#'
+    },
+    { 
+      code: 'en' as Language, 
+      name: 'Tiếng Anh', 
+      flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/en.svg',
+      flagCode: 'us',
+      href: '#'
+    },
+  ];
+
+  const currentLangName = languages.find(l => l.code === language)?.name || 'Tiếng Việt';
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -45,10 +84,45 @@ export default function Home() {
       setIsScrolled(window.scrollY > 50);
     };
 
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    const sections = ['vi-tri', 'ha-tang', 'quy-mo', 'chi-phi-uu-dai', 'tien-ich', 'quy-trinh', 'ho-tro', 'tin-tuc', 'tuyen-dung', 'lien-he'];
+    sections.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
     window.addEventListener('scroll', handleScroll);
+    
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.lang-dropdown-container')) {
+        setIsLangOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    
     return () => {
       clearInterval(timer);
       window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('click', handleClickOutside);
+      observer.disconnect();
     };
   }, []);
 
@@ -68,6 +142,7 @@ export default function Home() {
         top: offsetPosition,
         behavior: 'smooth'
       });
+      setActiveSection(id);
     }
     setIsMenuOpen(false);
   };
@@ -86,7 +161,7 @@ export default function Home() {
         <div className="container mx-auto px-4 flex justify-end items-center gap-8 text-xs text-slate-500 font-medium">
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 text-red-600" />
-            <span>Số 34, ngõ 291, đường Lê Lợi, P. Hoàng Văn Thụ, TP. Bắc Giang</span>
+            <span>{t.topBar.address}</span>
           </div>
           <div className="flex items-center gap-2">
             <Phone className="w-4 h-4 text-red-600" />
@@ -96,34 +171,36 @@ export default function Home() {
             onClick={() => scrollToSection('lien-he')}
             className="border border-cyan-500 text-cyan-500 px-6 py-1.5 rounded-full hover:bg-cyan-500 hover:text-white transition-colors uppercase tracking-wider"
           >
-            LIÊN HỆ
+            {t.nav.lienHe}
           </button>
         </div>
       </div>
 
       {/* Main Header */}
-<header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
-  <div className={`container mx-auto px-4 py-${isScrolled ? '2' : '4'} flex justify-between items-center transition-all duration-300`}>
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
+        <div className={`container mx-auto px-4 py-${isScrolled ? '2' : '4'} flex justify-between items-center transition-all duration-300 gap-12`}>
 
           {/* Logo */}
-          <Link to="/" className="flex items-center">
-                <img 
-        src={`${import.meta.env.BASE_URL}image/logocongty.avif`} 
-        alt="D-Park Group Logo" 
-className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto object-contain transition-all duration-300 hover:scale-${isScrolled ? '102' : '105'}`} 
-      />
-
+          <Link to="/" className="flex items-center shrink-0">
+            <img 
+              src={`${import.meta.env.BASE_URL}image/LOGO3.png`} 
+              alt="D-Park Group Logo" 
+              className={`h-${isScrolled ? '8 md:h-10 lg:h-12' : '10 md:h-12 lg:h-14'} w-auto object-contain transition-all duration-300 hover:scale-${isScrolled ? '102' : '105'}`} 
+            />
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-6">
-            {navItems.map((item) => (
+          <nav className="hidden lg:flex lg:flex-nowrap items-center gap-4 xl:gap-6 pt-4">
+            {navItems.slice(0, -1).map((item) => (
               <button
                 key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="text-[13px] font-bold tracking-wider text-slate-600 hover:text-cyan-500 transition-colors uppercase"
+                onClick={() => {
+                  scrollToSection(item.id);
+                  setActiveSection(item.id);
+                }}
+                className={`text-[11px] xl:text-[13px] font-bold tracking-wider transition-colors uppercase whitespace-nowrap ${activeSection === item.id ? 'text-cyan-500' : 'text-slate-600 hover:text-cyan-500'}`}
               >
-                {item.name}
+                {t.nav[item.name as keyof typeof t.nav]}
               </button>
             ))}
             <AnimatePresence>
@@ -132,13 +209,70 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  onClick={() => scrollToSection('lien-he')}
-                  className="bg-cyan-500 text-white px-6 py-2 rounded-full text-[13px] font-bold hover:bg-cyan-600 transition-colors uppercase tracking-wider shadow-lg shadow-cyan-500/20"
+                  onClick={() => {
+                    scrollToSection('lien-he');
+                    setActiveSection('lien-he');
+                  }}
+                  className={`px-6 py-2 rounded-full text-[13px] font-bold transition-colors uppercase tracking-wider shadow-lg whitespace-nowrap ${activeSection === 'lien-he' ? 'bg-cyan-500 text-white' : 'bg-cyan-500 text-white hover:bg-cyan-600'}`}
+                  style={activeSection === 'lien-he' ? { boxShadow: '0 10px 15px -3px rgb(34 211 238 / 0.3)' } : {}}
                 >
                   LIÊN HỆ
                 </motion.button>
               )}
             </AnimatePresence>
+
+            {/* Language Dropdown */}
+            <div className="relative lang-dropdown-container">
+              <button
+                onClick={() => setIsLangOpen(!isLangOpen)}
+                className="flex items-center gap-2 px-3 py-2 border border-slate-200 rounded-lg hover:border-cyan-500 hover:bg-cyan-50 transition-all"
+              >
+                <img 
+                  src={`https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/${language === 'vi' ? 'vi' : language === 'ja' ? 'ja' : language === 'zh' ? 'zh-hant' : 'en'}.svg`}
+                  alt={currentLangName}
+                  className="w-5 h-4 object-cover rounded-sm"
+                  onError={(e) => {
+                    const flagMap: Record<string, string> = {
+                      'vi': 'vi',
+                      'ja': 'jp',
+                      'zh': 'zh-hant',
+                      'en': 'en'
+                    };
+                    const flag = flagMap[language] || 'en';
+                    e.currentTarget.src = `https://flagcdn.com/w40/${flag}.png`;
+                  }}
+                />
+                <span className="text-xs font-bold text-slate-600 uppercase">{language.toUpperCase()}</span>
+                <ChevronUp className={`w-3 h-3 text-slate-400 transition-transform ${isLangOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {isLangOpen && (
+                <div className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-xl border border-slate-100 py-2 min-w-[160px] z-50">
+                  {languages.map((lang) => (
+                    <a
+                      key={lang.code}
+                      href={lang.href}
+                      className={`flex items-center gap-3 px-4 py-3 hover:bg-cyan-50 transition-colors ${language === lang.code ? 'bg-cyan-50' : ''}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setLanguage(lang.code);
+                        setIsLangOpen(false);
+                      }}
+                    >
+                      <img 
+                        src={lang.flagUrl}
+                        alt={lang.name}
+                        className="w-5 h-4 object-cover rounded-sm"
+                        onError={(e) => {
+                          e.currentTarget.src = `https://flagcdn.com/w40/${lang.flagCode}.png`;
+                        }}
+                      />
+                      <span className="text-sm font-medium text-slate-700">{lang.name}</span>
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* Mobile Menu Toggle */}
@@ -166,7 +300,7 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
                     onClick={() => scrollToSection(item.id)}
                     className="text-left text-lg font-semibold py-3 border-b border-slate-50 flex justify-between items-center text-slate-600"
                   >
-                    {item.name}
+                    {t.nav[item.name as keyof typeof t.nav]}
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 ))}
@@ -174,7 +308,7 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
                   onClick={() => scrollToSection('lien-he')}
                   className="mt-4 bg-cyan-500 text-white w-full py-4 rounded-2xl font-bold text-lg shadow-lg shadow-cyan-500/20 uppercase tracking-wider"
                 >
-                  LIÊN HỆ NGAY
+                  {t.common.contact} {t.nav.lienHe}
                 </button>
               </div>
             </motion.div>
@@ -214,30 +348,21 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
               transition={{ delay: 0.3 }}
               className="inline-block bg-cyan-500 text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6"
             >
-              Dự án trọng điểm Bắc Giang
+              {t.hero.badge}
             </motion.span>
             <h1 className="text-3xl md:text-5xl lg:text-7xl font-extrabold leading-tight mb-8 tracking-tight md:whitespace-nowrap">
-              KCN Xuân Cẩm <span className="text-cyan-400">– Hương Lâm</span>
+              {t.hero.titlePart1} <span className="text-cyan-400">{t.hero.titlePart2}</span>
             </h1>
             <p className="text-base md:text-lg text-slate-200 mb-12 leading-relaxed font-light md:whitespace-nowrap">
-              Tâm điểm kết nối – Kiến tạo thịnh vượng. Hạ tầng đồng bộ, hiện đại, thu hút đầu tư công nghệ cao.
+              {t.hero.description}
             </p>
             <div className="flex flex-wrap gap-6">
               <button onClick={() => document.getElementById('quy-mo')?.scrollIntoView({ behavior: 'smooth' })} className="bg-white text-slate-900 px-10 py-5 rounded-2xl font-bold hover:bg-cyan-500 hover:text-white transition-all flex items-center gap-3 group text-lg shadow-xl shadow-black/20">
-                Tìm hiểu dự án
+                {t.hero.cta}
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
           </motion.div>
-        </div>
-
-        <div className="absolute bottom-12 right-12 z-20 flex gap-4">
-          <button onClick={prevSlide} className="w-14 h-14 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white hover:text-slate-900 transition-all">
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          <button onClick={nextSlide} className="w-14 h-14 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white hover:text-slate-900 transition-all">
-            <ChevronRight className="w-6 h-6" />
-          </button>
         </div>
       </section>
 
@@ -275,14 +400,20 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
       <section className="py-24 bg-slate-50">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
+            <motion.div 
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="space-y-8"
+            >
               <div className="space-y-4">
-                <span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">Tầm nhìn & Sứ mệnh</span>
-                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight tracking-tighter">Kiến tạo hạ tầng <br /> <span className="text-cyan-500">vững bền, hiện đại</span></h2>
+                <span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">{t.vision.label}</span>
+                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight tracking-tighter">{t.vision.title1} <br /> <span className="text-cyan-500">{t.vision.title2}</span></h2>
               </div>
               <div className="p-8 bg-white rounded-[40px] shadow-xl border border-slate-100">
                 <p className="text-lg text-slate-600 leading-relaxed italic">
-                  "Xây dựng hạ tầng kỹ thuật đồng bộ, hiện đại, thu hút đầu tư công nghệ cao tại Bắc Giang. Tâm điểm kết nối – Kiến tạo thịnh vượng."
+                  "{t.vision.quote}"
                 </p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -291,8 +422,8 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
                     <ShieldCheck className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900">Chất lượng Nhật Bản</h4>
-                    <p className="text-sm text-slate-500">Tư vấn bởi Nippon Koei</p>
+                    <h4 className="font-bold text-slate-900">{t.vision.qualityTitle}</h4>
+                    <p className="text-sm text-slate-500">{t.vision.qualityDesc}</p>
                   </div>
                 </div>
                 <div className="flex gap-4">
@@ -300,18 +431,24 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
                     <Zap className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900">Công nghệ cao</h4>
-                    <p className="text-sm text-slate-500">Ưu tiên dự án thông minh</p>
+                    <h4 className="font-bold text-slate-900">{t.vision.techTitle}</h4>
+                    <p className="text-sm text-slate-500">{t.vision.techDesc}</p>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="relative">
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="relative"
+            >
               <div className="rounded-[40px] overflow-hidden shadow-2xl">
                 <img src={`${import.meta.env.BASE_URL}image/AIComplex_1776166732689.avif`} alt="Tầm nhìn dự án" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               </div>
               <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-cyan-500 rounded-3xl -z-10" />
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -339,45 +476,62 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
               </div>
             </div>
             <div className="lg:w-1/2 space-y-8">
-              <span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">Vị trí chiến lược</span>
-              <h2 className="text-4xl md:text-6xl font-bold text-slate-900 leading-tight tracking-tighter">
-                Tâm điểm kết nối <br /> vùng kinh tế <span className="text-cyan-500">trọng điểm</span>
-              </h2>
-              <div className="space-y-6 text-lg text-slate-600 font-light leading-relaxed">
-                <p>• Dự án tọa lạc tại <strong>xã Xuân Cẩm, huyện Hiệp Hòa, tỉnh Bắc Giang</strong>, trung tâm tam giác công nghiệp Đông Bắc Hà Nội: <strong>Thái Nguyên – Bắc Ninh – Bắc Giang</strong>.</p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+              >
+                <span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">{t.location.label}</span>
+                <h2 className="text-4xl md:text-6xl font-bold text-slate-900 leading-tight tracking-tighter">
+                  {t.location.title1} <br />vùng kinh tế <span className="text-cyan-500">{t.location.titleHighlight}</span>
+                </h2>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="space-y-6 text-lg text-slate-600 font-light leading-relaxed"
+              >
+                <p>• {t.location.description1}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
                     <div className="text-cyan-600 font-bold">50 km</div>
-                    <div className="text-sm text-slate-500">Đến Trung tâm Hà Nội</div>
+                    <div className="text-sm text-slate-500">{t.location.distanceToHanoi}</div>
                   </div>
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
                     <div className="text-cyan-600 font-bold">20 km</div>
-                    <div className="text-sm text-slate-500">Đến TP. Bắc Ninh</div>
+                    <div className="text-sm text-slate-500">{t.location.distanceToBacNinh}</div>
                   </div>
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
                     <div className="text-cyan-600 font-bold">30 km</div>
-                    <div className="text-sm text-slate-500">Đến TP. Bắc Giang</div>
+                    <div className="text-sm text-slate-500">{t.location.distanceToBacGiang}</div>
                   </div>
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
                     <div className="text-cyan-600 font-bold">65 km</div>
-                    <div className="text-sm text-slate-500">Đến TP. Thái Nguyên</div>
+                    <div className="text-sm text-slate-500">{t.location.distanceToThaiNguyen}</div>
                   </div>
                 </div>
-                <p>• Kết nối giao thông cực kỳ thuận tiện: Cách <strong>Cao tốc Hà Nội – Thái Nguyên 4km</strong> và cách <strong>Cao tốc Hà Nội – Lạng Sơn 20km</strong>.</p>
-                <p>• Gần các "ông lớn" công nghệ: Cách <strong>Samsung Bắc Ninh 15km</strong> và <strong>Samsung Thái Nguyên 20km</strong>.</p>
-              </div>
+                <p>• {t.location.highwayDesc}</p>
+                <p>• {t.location.samsungDesc}</p>
+              </motion.div>
             </div>
           </div>
 
           {/* Giao thông cards merged here */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 border-t border-slate-100">
             {[
-              { title: 'Đường hàng không', value: '20km', desc: 'Đến Sân bay Quốc tế Nội Bài, thuận tiện vận chuyển hàng hóa quốc tế và chuyên gia.', icon: Plane, color: 'text-blue-500' },
-              { title: 'Đường biển', value: '120km', desc: 'Đến Cảng Hải Phòng và Cảng Lạch Huyện qua QL5 và Cao tốc Hà Nội - Hải Phòng.', icon: Ship, color: 'text-cyan-500' },
-              { title: 'Đường bộ', value: '4km', desc: 'Kết nối trực tiếp vào Cao tốc Hà Nội - Thái Nguyên (CT07) và các trục QL18, QL5.', icon: Map, color: 'text-slate-900' },
-            ].map((item) => (
+              { title: t.location.air, value: '20km', desc: t.location.airDesc, icon: Plane, color: 'text-blue-500' },
+              { title: t.location.sea, value: '120km', desc: t.location.seaDesc, icon: Ship, color: 'text-cyan-500' },
+              { title: t.location.road, value: '4km', desc: t.location.roadDesc, icon: Map, color: 'text-slate-900' },
+            ].map((item, index) => (
               <motion.div 
                 key={item.title} 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
                 whileHover={{ y: -10 }}
                 className="p-10 rounded-[40px] bg-slate-50 border border-slate-100 text-center shadow-xl shadow-slate-200/20"
               >
@@ -397,17 +551,32 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
       <section id="ha-tang" className="py-24 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
-            <span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">Hạ tầng kỹ thuật</span>
-            <h2 className="text-4xl md:text-6xl font-bold mt-4 tracking-tighter">Đồng bộ & Hiện đại</h2>
+            <motion.span 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm"
+            >
+              {t.infrastructure.label}
+            </motion.span>
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl md:text-6xl font-bold mt-4 tracking-tighter"
+            >
+              {t.infrastructure.title}
+            </motion.h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { title: 'Đường nội khu', en: 'Internal road', desc: 'Tuyến chính rộng 72m (6 làn xe + kênh điều hòa). Tuyến nội bộ tối thiểu 4 làn xe.', icon: Map, color: 'bg-blue-500' },
-              { title: 'Cung cấp điện', en: 'Power supply', desc: 'Trạm biến áp 110/22 kV hiện đại. Điện áp cấp đến tận hàng rào nhà máy 22kV.', icon: Zap, color: 'bg-yellow-500' },
-              { title: 'Cung cấp nước sạch', en: 'Provide clean water', desc: 'Hệ thống cấp nước công suất Giai đoạn 1 đạt 5.000 m3/ngày đêm.', icon: Droplets, color: 'bg-cyan-500' },
-              { title: 'Xử lý nước thải', en: 'Wastewater treatment', desc: 'Hệ thống xử lý đạt tiêu chuẩn loại A QCVN 40:2011/BTNMT. Công suất 5.000 m3/ngày.', icon: Waves, color: 'bg-green-500' },
-              { title: 'Phòng cháy chữa cháy', en: 'Fire protection', desc: 'Hệ thống trụ cứu hỏa bố trí thuận tiện dọc các trục đường giao thông.', icon: ShieldCheck, color: 'bg-red-500' },
-              { title: 'Viễn thông', en: 'Telecommunications', desc: 'Hệ thống cáp quang, internet tốc độ cao sẵn sàng kết nối tới từng lô đất.', icon: Globe, color: 'bg-indigo-500' },
+              { title: t.infrastructure.roads, desc: t.infrastructure.roadsDesc, icon: Map, color: 'bg-blue-500' },
+              { title: t.infrastructure.power, desc: t.infrastructure.powerDesc, icon: Zap, color: 'bg-yellow-500' },
+              { title: t.infrastructure.water, desc: t.infrastructure.waterDesc, icon: Droplets, color: 'bg-cyan-500' },
+              { title: t.infrastructure.wastewater, desc: t.infrastructure.wastewaterDesc, icon: Waves, color: 'bg-green-500' },
+              { title: t.infrastructure.fire, desc: t.infrastructure.fireDesc, icon: ShieldCheck, color: 'bg-red-500' },
+              { title: t.infrastructure.telecom, desc: t.infrastructure.telecomDesc, icon: Globe, color: 'bg-indigo-500' },
             ].map((item, index) => (
               <motion.div
                 key={item.title}
@@ -421,8 +590,7 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
                   <item.icon className="w-7 h-7" />
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900">{item.title}</h3>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1 mb-4">{item.en}</p>
-                <p className="text-slate-500 leading-relaxed font-light">{item.desc}</p>
+                <p className="text-slate-500 leading-relaxed font-light mt-2">{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -436,54 +604,71 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
         </div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex flex-col lg:flex-row gap-20">
-            <div className="lg:w-1/2 space-y-12">
+            <motion.div 
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="lg:w-1/2 space-y-12"
+            >
               <div className="space-y-4">
-                <span className="text-cyan-400 font-black uppercase tracking-[0.2em] text-sm">Quy mô & Ngành nghề</span>
-                <h2 className="text-4xl md:text-6xl font-bold leading-tight tracking-tighter">Phát triển bền vững <br /> cùng <span className="text-cyan-400">Công nghệ cao</span></h2>
+                <span className="text-cyan-400 font-black uppercase tracking-[0.2em] text-sm">{t.scale.label}</span>
+                <h2 className="text-4xl md:text-6xl font-bold leading-tight tracking-tighter">{t.scale.title1} <br /> cùng <span className="text-cyan-400">{t.scale.title2}</span></h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                <div className="p-8 bg-white/5 backdrop-blur-md rounded-3xl border border-white/10">
-                  <div className="text-4xl font-black text-cyan-400 mb-2">102,85 ha</div>
-                  <div className="text-sm font-bold text-slate-400 uppercase tracking-widest">Tổng diện tích GĐ1</div>
-                </div>
-                <div className="p-8 bg-white/5 backdrop-blur-md rounded-3xl border border-white/10">
-                  <div className="text-4xl font-black text-cyan-400 mb-2">63,72 ha</div>
-                  <div className="text-sm font-bold text-slate-400 uppercase tracking-widest">Đất công nghiệp</div>
-                </div>
-                <div className="p-8 bg-white/5 backdrop-blur-md rounded-3xl border border-white/10">
-                  <div className="text-4xl font-black text-cyan-400 mb-2">2,73 ha</div>
-                  <div className="text-sm font-bold text-slate-400 uppercase tracking-widest">Đất dịch vụ</div>
-                </div>
-                <div className="p-8 bg-white/5 backdrop-blur-md rounded-3xl border border-white/10">
-                  <div className="text-4xl font-black text-cyan-400 mb-2">5,47 ha</div>
-                  <div className="text-sm font-bold text-slate-400 uppercase tracking-widest">Đất hạ tầng kỹ thuật</div>
-                </div>
+                {[
+                  { value: '102,85 ha', label: t.scale.totalArea },
+                  { value: '63,72 ha', label: t.scale.industrialLand },
+                  { value: '2,73 ha', label: t.scale.serviceLand },
+                  { value: '5,47 ha', label: t.scale.techLand },
+                ].map((item, index) => (
+                  <motion.div 
+                    key={item.label}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className="p-8 bg-white/5 backdrop-blur-md rounded-3xl border border-white/10"
+                  >
+                    <div className="text-4xl font-black text-cyan-400 mb-2">{item.value}</div>
+                    <div className="text-sm font-bold text-slate-400 uppercase tracking-widest">{item.label}</div>
+                  </motion.div>
+                ))}
               </div>
               <div className="space-y-6">
                 <h4 className="text-2xl font-bold flex items-center gap-3">
                   <CheckCircle2 className="text-cyan-400 w-6 h-6" />
-                  Ngành nghề khuyến khích đầu tư:
+                  {t.scale.encouragedTitle}
                 </h4>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-400 text-lg font-light">
-                  <li>• Công nghệ hiện đại, công nghệ cao</li>
-                  <li>• Chế biến trái cây & nông sản</li>
-                  <li>• Dược phẩm, thiết bị y tế</li>
-                  <li>• Công nghệ sinh học</li>
-                  <li>• Sản xuất linh kiện điện tử</li>
-                  <li>• Cơ khí chế tạo chính xác</li>
+                  {t.scale.industries.map((industry, i) => (
+                    <motion.li 
+                      key={i}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.2 + i * 0.05 }}
+                    >• {industry}</motion.li>
+                  ))}
                 </ul>
               </div>
-            </div>
-            <div className="lg:w-1/2">
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="lg:w-1/2"
+            >
               <div className="rounded-[40px] overflow-hidden shadow-2xl border-4 border-white/10">
                 <img 
-                  src={`${import.meta.env.BASE_URL}image/AIComplex_1776166839889.avif`} 
+                  src={`${import.meta.env.BASE_URL}image/AIComplex_1777918636053.avif`} 
                   alt="Quy hoạch KCN" 
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                 />
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -492,86 +677,129 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
       <section id="chi-phi-uu-dai" className="py-24 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
-            <span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">Chi phí & Ưu đãi</span>
-            <h2 className="text-4xl md:text-6xl font-bold mt-4 tracking-tighter">Cạnh tranh & Hấp dẫn</h2>
+            <motion.span 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm"
+            >
+              {t.cost.label}
+            </motion.span>
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl md:text-6xl font-bold mt-4 tracking-tighter"
+            >
+              {t.cost.title}
+            </motion.h2>
           </div>
           
           {/* Cost Part */}
-          <div className="max-w-4xl mx-auto bg-slate-50 rounded-[40px] overflow-hidden border border-slate-100 shadow-xl mb-16">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="max-w-4xl mx-auto bg-slate-50 rounded-[40px] overflow-hidden border border-slate-100 shadow-xl mb-16"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2">
-              <div className="p-12 border-b md:border-b-0 md:border-r border-slate-200">
-                <h4 className="text-xl font-bold text-slate-900 mb-8">Lương tối thiểu vùng</h4>
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="p-12 border-b md:border-b-0 md:border-r border-slate-200"
+              >
+                <h4 className="text-xl font-bold text-slate-900 mb-8">{t.cost.minWage}</h4>
                 <div className="flex items-baseline gap-2">
                   <span className="text-6xl font-black text-cyan-600">160$</span>
-                  <span className="text-slate-400 font-bold">/ tháng</span>
+                  <span className="text-slate-400 font-bold">{t.cost.perMonth}</span>
                 </div>
                 <p className="mt-6 text-slate-500 leading-relaxed">Áp dụng cho Vùng 3 theo quy định của Chính phủ Việt Nam, giúp tối ưu chi phí nhân công cho doanh nghiệp.</p>
-              </div>
-              <div className="p-12">
-                <h4 className="text-xl font-bold text-slate-900 mb-8">Tổng vốn đầu tư hạ tầng</h4>
+              </motion.div>
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                className="p-12"
+              >
+                <h4 className="text-xl font-bold text-slate-900 mb-8">{t.cost.totalInvestment}</h4>
                 <div className="flex items-baseline gap-2">
                   <span className="text-4xl font-black text-slate-900">1.467,5</span>
                   <span className="text-slate-400 font-bold">tỷ VNĐ</span>
                 </div>
-                <p className="mt-6 text-slate-500 leading-relaxed">Cam kết đầu tư hạ tầng chất lượng cao nhất với đơn vị tư vấn Nippon Koei (Nhật Bản).</p>
-              </div>
+                <p className="mt-6 text-slate-500 leading-relaxed">{t.cost.investmentDesc}</p>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Incentives Part */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-            <div className="p-12 bg-white rounded-[40px] shadow-xl border border-slate-100 space-y-8">
-              <div className="inline-block bg-cyan-500 text-white px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest">Dự án diện đặc biệt</div>
-              <h3 className="text-3xl font-bold text-slate-900">Khuyến khích đầu tư</h3>
-              <ul className="space-y-4 text-lg text-slate-600 font-light">
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-cyan-500 shrink-0 mt-1" />
-                  <span><strong>10%</strong> thuế suất áp dụng trong 15 năm</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-cyan-500 shrink-0 mt-1" />
-                  <span><strong>Miễn 4 năm</strong> thuế TNDN (kể từ khi có thu nhập chịu thuế)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-cyan-500 shrink-0 mt-1" />
-                  <span><strong>Giảm 50%</strong> trong 9 năm tiếp theo</span>
-                </li>
-              </ul>
-            </div>
-            <div className="p-12 bg-white rounded-[40px] shadow-xl border border-slate-100 space-y-8">
-              <div className="inline-block bg-slate-700 text-white px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest">Dự án mức độ thông thường</div>
-              <h3 className="text-3xl font-bold text-slate-900">Ưu đãi phổ thông</h3>
-              <ul className="space-y-4 text-lg text-slate-600 font-light">
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-slate-700 shrink-0 mt-1" />
-                  <span><strong>Miễn 2 năm</strong> thuế TNDN</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-slate-700 shrink-0 mt-1" />
-                  <span><strong>Giảm 50%</strong> trong 4 năm tiếp theo (thuế suất 20%)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-slate-700 shrink-0 mt-1" />
-                  <span><strong>0%</strong> thuế nhập khẩu máy móc, trang thiết bị tạo tài sản cố định</span>
-                </li>
-              </ul>
-            </div>
+            {[
+              { 
+                badge: t.cost.specialProject, 
+                title: t.cost.specialTitle, 
+                items: [t.cost.special1, t.cost.special2, t.cost.special3],
+                badgeColor: 'bg-cyan-500',
+                textColor: 'text-cyan-500'
+              },
+              { 
+                badge: t.cost.normalProject, 
+                title: t.cost.normalTitle, 
+                items: [t.cost.normal1, t.cost.normal2, t.cost.normal3],
+                badgeColor: 'bg-slate-700',
+                textColor: 'text-slate-700'
+              }
+            ].map((card, cardIndex) => (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 + cardIndex * 0.1 }}
+                className="p-12 bg-white rounded-[40px] shadow-xl border border-slate-100 space-y-8"
+              >
+                <div className={`inline-block ${card.badgeColor} text-white px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest`}>{card.badge}</div>
+                <h3 className="text-3xl font-bold text-slate-900">{card.title}</h3>
+                <ul className="space-y-4 text-lg text-slate-600 font-light">
+                  {card.items.map((item, itemIndex) => (
+                    <motion.li 
+                      key={itemIndex}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.2 + itemIndex * 0.1 }}
+                      className="flex items-start gap-3"
+                    >
+                      <CheckCircle2 className={`w-6 h-6 ${card.textColor} shrink-0 mt-1`} />
+                      <span>{item}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
           </div>
 
           {/* Additional Incentives */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-8 bg-slate-50 rounded-3xl border border-slate-100 shadow-sm">
-              <div className="text-cyan-500 font-bold text-xl mb-4">Thuế GTGT</div>
-              <p className="text-slate-500 text-sm"><strong>0%</strong> áp dụng cho các dự án được cấp phép chế xuất.</p>
-            </div>
-            <div className="p-8 bg-slate-50 rounded-3xl border border-slate-100 shadow-sm">
-              <div className="text-cyan-500 font-bold text-xl mb-4">Thuế TNCN</div>
-              <p className="text-slate-500 text-sm"><strong>Giảm 50%</strong> thuế TNCN cho các chuyên gia làm việc tại dự án khuyến khích đầu tư.</p>
-            </div>
-            <div className="p-8 bg-slate-50 rounded-3xl border border-slate-100 shadow-sm">
-              <div className="text-cyan-500 font-bold text-xl mb-4">Thủ tục đặc biệt</div>
-              <p className="text-slate-500 text-sm">Ưu tiên rút ngắn thủ tục cho các dự án CNC, R&D, bán dẫn, chip điện tử.</p>
-            </div>
+            {[t.cost.vat, t.cost.pIT, t.cost.procedure].map((item, index) => (
+              <motion.div
+                key={item}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="p-8 bg-slate-50 rounded-3xl border border-slate-100 shadow-sm"
+              >
+                <div className="text-cyan-500 font-bold text-xl mb-4">{item}</div>
+                <p className="text-slate-500 text-sm">
+                  {index === 0 ? t.cost.vatDesc : index === 1 ? t.cost.pITDesc : t.cost.procedureDesc}
+                </p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -580,39 +808,57 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
       <section id="tien-ich" className="py-24 bg-white">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-20 items-center">
-            <div className="lg:w-1/2">
+            <motion.div 
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="lg:w-1/2"
+            >
               <div className="relative">
                 <div className="rounded-[40px] overflow-hidden shadow-2xl">
                   <img src={`${import.meta.env.BASE_URL}image/AIComplex_1776166944793.avif`} alt="Tiện ích dự án" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                 </div>
                 <div className="absolute -top-6 -left-6 w-24 h-24 bg-cyan-500 rounded-full blur-2xl opacity-20" />
               </div>
-            </div>
-            <div className="lg:w-1/2 space-y-12">
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="lg:w-1/2 space-y-12"
+            >
               <div className="space-y-4">
-                <span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">Tiện ích đa dạng</span>
-                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight tracking-tighter">Môi trường sống & làm việc <br /> <span className="text-cyan-500">lý tưởng</span></h2>
+                <span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">{t.amenities.label}</span>
+                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight tracking-tighter">{t.amenities.title1} <br /> <span className="text-cyan-500">{t.amenities.title2}</span></h2>
                 <p className="text-slate-500 text-lg font-light leading-relaxed">
-                  Khu đô thị dịch vụ Xuân Cẩm - Hương Lâm được quy hoạch đồng bộ, đảm bảo cung cấp đầy đủ hạ tầng xã hội cần thiết cho chuyên gia và người lao động.
+                  {t.amenities.description}
                 </p>
               </div>
-              <div className="grid grid-cols-2 gap-8">
+              <div className="grid grid-cols-4 gap-8">
                 {[
-                  { title: 'Y tế', desc: 'Medical services', icon: ShieldCheck },
-                  { title: 'Giáo dục', desc: 'Education system', icon: Users },
-                  { title: 'Thương mại', desc: 'Commerce center', icon: Globe },
-                  { title: 'Thể thao', desc: 'Sport & Culture', icon: Zap },
-                ].map((item) => (
-                  <div key={item.title} className="space-y-3">
-                    <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-cyan-500">
+                  { title: t.amenities.medical, icon: ShieldCheck },
+                  { title: t.amenities.education, icon: Users },
+                  { title: t.amenities.commerce, icon: Globe },
+                  { title: t.amenities.sports, icon: Zap },
+                ].map((item, index) => (
+                  <motion.div 
+                    key={item.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    className="space-y-3 text-center"
+                  >
+                    <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-cyan-500 mx-auto">
                       <item.icon className="w-6 h-6" />
                     </div>
                     <h4 className="font-bold text-slate-900">{item.title}</h4>
-                    <p className="text-xs text-slate-400 uppercase tracking-widest font-bold">{item.desc}</p>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -621,33 +867,44 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
       <section id="quy-trinh" className="py-24 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
-            <span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">Quy trình thực hiện</span>
-            <h2 className="text-4xl md:text-6xl font-bold mt-4 tracking-tighter">10 Bước đầu tư KCN</h2>
+            <motion.span 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm"
+            >
+              {t.process.label}
+            </motion.span>
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl md:text-6xl font-bold mt-4 tracking-tighter"
+            >
+              {t.process.title}
+            </motion.h2>
           </div>
           <div className="relative">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 h-full w-0.5 bg-slate-100 hidden lg:block" />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-20 gap-y-12">
-              {[
-                { step: '01', title: 'Ký kết Hợp đồng nguyên tắc', desc: 'Thỏa thuận thuê lại đất giữa nhà đầu tư và chủ đầu tư hạ tầng.' },
-                { step: '02', title: 'Đăng ký doanh nghiệp', desc: 'Xin cấp Giấy chứng nhận đăng ký doanh nghiệp tại địa phương.' },
-                { step: '03', title: 'Đăng ký đầu tư', desc: 'Thực hiện thủ tục xin cấp Giấy chứng nhận đăng ký đầu tư (IRC).' },
-                { step: '04', title: 'Ký Hợp đồng thuê đất', desc: 'Ký kết chính thức hợp đồng thuê lại đất sau khi có IRC.' },
-                { step: '05', title: 'Cấp GCN Quyền sử dụng đất', desc: 'Hoàn tất thủ tục pháp lý về quyền sử dụng đất cho nhà đầu tư.' },
-                { step: '06', title: 'Thủ tục Môi trường', desc: 'Lập và xin phê duyệt Báo cáo đánh giá tác động môi trường (ĐTM).' },
-                { step: '07', title: 'Phê duyệt Quy hoạch', desc: 'Lập và xin phê duyệt quy hoạch chi tiết/tổng mặt bằng dự án.' },
-                { step: '08', title: 'Thẩm duyệt PCCC', desc: 'Lập và xin thẩm duyệt thiết kế phòng cháy chữa cháy.' },
-                { step: '09', title: 'Phê duyệt Thiết kế', desc: 'Lập và xin phê duyệt thiết kế kỹ thuật, bản vẽ thi công.' },
-                { step: '10', title: 'Cấp Giấy phép xây dựng', desc: 'Xin cấp phép và bắt đầu triển khai thi công nhà máy.' },
-              ].map((item, index) => (
-                <div key={item.step} className={`flex items-center gap-8 ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}>
+              {t.process.steps.map((item, index) => (
+                <motion.div 
+                  key={item.title} 
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  className={`flex items-center gap-8 ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}
+                >
                   <div className="w-16 h-16 rounded-full bg-cyan-500 text-white flex items-center justify-center font-black text-xl shrink-0 shadow-lg shadow-cyan-500/30 z-10">
-                    {item.step}
+                    {String(index + 1).padStart(2, '0')}
                   </div>
                   <div className={`p-8 bg-slate-50 rounded-[32px] border border-slate-100 flex-grow hover:bg-white hover:shadow-xl transition-all ${index % 2 !== 0 ? 'lg:text-right' : ''}`}>
                     <h4 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h4>
                     <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -658,34 +915,54 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
       <section id="ho-tro" className="py-24 bg-slate-900 text-white">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-20 items-center">
-            <div className="lg:w-1/3 space-y-6">
-              <span className="text-cyan-400 font-black uppercase tracking-[0.2em] text-sm">Đồng hành cùng nhà đầu tư</span>
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter leading-tight">Hỗ trợ toàn diện từ Chủ đầu tư</h2>
+            <motion.div 
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="lg:w-1/3 space-y-6"
+            >
+              <span className="text-cyan-400 font-black uppercase tracking-[0.2em] text-sm">{t.support.label}</span>
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter leading-tight">{t.support.title}</h2>
               <p className="text-slate-400 font-light leading-relaxed">
-                Chúng tôi cam kết hỗ trợ tối đa cho các nhà đầu tư từ khâu chuẩn bị đến khi đi vào hoạt động sản xuất kinh doanh ổn định.
+                {t.support.description}
               </p>
-            </div>
+            </motion.div>
             <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-8">
               {[
-                { title: 'Thủ tục đầu tư', items: ['Chứng nhận đầu tư nhanh nhất', 'Hỗ trợ con dấu, mã số thuế'], icon: ShieldCheck },
-                { title: 'Thành lập công ty', items: ['Tư vấn tuyển dụng lao động', 'Hỗ trợ nguồn nhân lực'], icon: Users },
-                { title: 'Tài chính ngân hàng', items: ['Hỗ trợ vay vốn lưu động', 'Vay vốn sản xuất & thuê đất'], icon: DollarSign },
-                { title: 'Dịch vụ thương mại', items: ['Nhà ở công nhân & chuyên gia', 'Văn phòng cho thuê', 'Trung tâm giải trí'], icon: Globe },
-              ].map((group) => (
-                <div key={group.title} className="p-8 bg-white/5 rounded-[40px] border border-white/10 hover:bg-white/10 transition-all">
+                { title: t.support.investmentTitle, items: t.support.investmentItems, icon: ShieldCheck },
+                { title: t.support.companyTitle, items: t.support.companyItems, icon: Users },
+                { title: t.support.financeTitle, items: t.support.financeItems, icon: DollarSign },
+                { title: t.support.serviceTitle, items: t.support.serviceItems, icon: Globe },
+              ].map((card, index) => (
+                <motion.div
+                  key={card.title}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="p-8 bg-white/5 rounded-[40px] border border-white/10 hover:bg-white/10 transition-all"
+                >
                   <div className="w-12 h-12 bg-cyan-500/20 rounded-2xl flex items-center justify-center text-cyan-400 mb-6">
-                    <group.icon className="w-6 h-6" />
+                    <card.icon className="w-6 h-6" />
                   </div>
-                  <h4 className="text-xl font-bold mb-4">{group.title}</h4>
+                  <h4 className="text-xl font-bold mb-4">{card.title}</h4>
                   <ul className="space-y-3">
-                    {group.items.map(item => (
-                      <li key={item} className="flex items-center gap-3 text-slate-400 text-sm">
+                    {card.items.map((item, i) => (
+                      <motion.li 
+                        key={i}
+                        initial={{ opacity: 0, x: -10 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2 + i * 0.05 }}
+                        className="flex items-center gap-3 text-slate-400 text-sm"
+                      >
                         <div className="w-1.5 h-1.5 rounded-full bg-cyan-500" />
                         {item}
-                      </li>
+                      </motion.li>
                     ))}
                   </ul>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -696,23 +973,28 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
       <section id="tin-tuc" className="py-24 bg-white">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-end mb-16">
-            <div className="space-y-4">
-              <span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">Tin tức & Sự kiện</span>
-              <h2 className="text-4xl md:text-6xl font-bold tracking-tighter">Cập nhật mới nhất</h2>
-            </div>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="space-y-4"
+            >
+              <span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">{t.news.label}</span>
+              <h2 className="text-4xl md:text-6xl font-bold tracking-tighter">{t.news.title}</h2>
+            </motion.div>
             <button className="hidden md:flex items-center gap-2 text-cyan-600 font-bold hover:gap-4 transition-all">
-              Xem tất cả tin tức <ArrowRight className="w-5 h-5" />
+              {t.common.viewAll} <ArrowRight className="w-5 h-5" />
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { title: 'Khởi công xây dựng hạ tầng kỹ thuật Giai đoạn 1', date: '15/03/2024', image: `${import.meta.env.BASE_URL}image/AIComplex_1776166944793.avif`, category: 'Sự kiện' },
-              { title: 'D-PARK GROUP ký kết hợp tác chiến lược cùng Nippon Koei', date: '10/02/2024', image: `${import.meta.env.BASE_URL}image/AIComplex_1776166944793.avif`, category: 'Hợp tác' },
-              { title: 'Bắc Giang dẫn đầu cả nước về tốc độ tăng trưởng GRDP', date: '05/01/2024', image: `${import.meta.env.BASE_URL}image/AIComplex_1776166944793.avif`, category: 'Thị trường' },
+              { title: 'Khởi công xây dựng hạ tầng kỹ thuật Giai đoạn 1', date: '15/03/2024', image: `${import.meta.env.BASE_URL}image/AIComplex_1776166944793.avif`, category: t.news.categories.event },
+              { title: 'D-PARK GROUP ký kết hợp tác chiến lược cùng Nippon Koei', date: '10/02/2024', image: `${import.meta.env.BASE_URL}image/AIComplex_1777917995188.avif`, category: t.news.categories.cooperation },
+              { title: 'Bắc Giang dẫn đầu cả nước về tốc độ tăng trưởng GRDP', date: '05/01/2024', image: `${import.meta.env.BASE_URL}image/AIComplex_1777917938644.avif`, category: t.news.categories.market },
             ].map((news, index) => (
               <motion.div
                 key={news.title}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
@@ -739,40 +1021,59 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
       {/* TUYỂN DỤNG Section */}
       <section id="tuyen-dung" className="py-24 bg-slate-50">
         <div className="container mx-auto px-4">
-          <div className="bg-cyan-500 rounded-[60px] p-12 lg:p-20 relative overflow-hidden">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="bg-cyan-500 rounded-[60px] p-12 lg:p-20 relative overflow-hidden"
+          >
             <div className="absolute inset-0 opacity-20">
               <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-white rounded-full translate-x-1/3 translate-y-1/3 blur-[100px]" />
             </div>
             <div className="relative z-10 flex flex-col lg:flex-row items-center gap-16">
-              <div className="lg:w-1/2 space-y-8">
-                <span className="text-white/80 font-black uppercase tracking-[0.2em] text-sm">Cơ hội nghề nghiệp</span>
-                <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tighter leading-tight">Gia nhập đội ngũ <br /> kiến tạo tương lai</h2>
+              <motion.div 
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="lg:w-1/2 space-y-8"
+              >
+                <span className="text-white/80 font-black uppercase tracking-[0.2em] text-sm">{t.recruitment.label}</span>
+                <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tighter leading-tight">{t.recruitment.title1} <br /> {t.recruitment.title2}</h2>
                 <p className="text-white/80 text-lg font-light leading-relaxed">
-                  Chúng tôi luôn tìm kiếm những cộng sự tài năng, nhiệt huyết để cùng xây dựng những giá trị bền vững cho cộng đồng và khách hàng.
+                  {t.recruitment.description}
                 </p>
                 <button className="bg-white text-cyan-600 px-10 py-4 rounded-2xl font-bold hover:bg-slate-900 hover:text-white transition-all shadow-xl shadow-cyan-900/10">
-                  Xem các vị trí đang tuyển
+                  {t.recruitment.cta}
                 </button>
-              </div>
+              </motion.div>
               <div className="lg:w-1/2 grid grid-cols-1 gap-4 w-full">
                 {[
-                  { pos: 'Kỹ sư hạ tầng kỹ thuật', type: 'Toàn thời gian', loc: 'Bắc Giang' },
-                  { pos: 'Chuyên viên kinh doanh BĐS KCN', type: 'Toàn thời gian', loc: 'Hà Nội / Bắc Giang' },
-                  { pos: 'Chuyên viên pháp lý dự án', type: 'Toàn thời gian', loc: 'Bắc Giang' },
-                ].map((job) => (
-                  <div key={job.pos} className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-3xl flex justify-between items-center group hover:bg-white transition-all cursor-pointer">
+                  { pos: 'Kỹ sư hạ tầng kỹ thuật', loc: 'Bắc Giang' },
+                  { pos: 'Chuyên viên kinh doanh BĐS KCN', loc: 'Hà Nội / Bắc Giang' },
+                  { pos: 'Chuyên viên pháp lý dự án', loc: 'Bắc Giang' },
+                ].map((job, index) => (
+                  <motion.div 
+                    key={job.pos}
+                    initial={{ opacity: 0, x: 50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.3 + index * 0.1 }}
+                    className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-3xl flex justify-between items-center group hover:bg-white transition-all cursor-pointer"
+                  >
                     <div className="space-y-1">
                       <h4 className="text-white font-bold text-lg group-hover:text-slate-900 transition-colors">{job.pos}</h4>
-                      <div className="text-white/60 text-xs group-hover:text-slate-400 transition-colors uppercase tracking-widest font-bold">{job.type} • {job.loc}</div>
+                      <div className="text-white/60 text-xs group-hover:text-slate-400 transition-colors uppercase tracking-widest font-bold">{t.recruitment.fullTime} • {job.loc}</div>
                     </div>
                     <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white group-hover:bg-cyan-500 transition-all">
                       <ArrowRight className="w-5 h-5" />
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -786,8 +1087,8 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
             <div className="relative z-10 p-12 lg:p-24 flex flex-col lg:flex-row gap-20">
               <div className="lg:w-1/2 space-y-12">
                 <div className="space-y-4">
-                  <span className="text-cyan-400 font-black uppercase tracking-[0.2em] text-sm">Liên hệ ngay</span>
-                  <h2 className="text-4xl md:text-6xl font-bold text-white leading-tight tracking-tighter">Sẵn sàng đồng hành <br /> cùng <span className="text-cyan-400">thành công</span> của bạn</h2>
+                  <span className="text-cyan-400 font-black uppercase tracking-[0.2em] text-sm">{t.contact.label}</span>
+                  <h2 className="text-4xl md:text-6xl font-bold text-white leading-tight tracking-tighter">{t.contact.title1} <br /> cùng <span className="text-cyan-400">{t.contact.title2}</span></h2>
                 </div>
                 <div className="space-y-8">
                   <div className="flex items-center gap-6 group">
@@ -795,7 +1096,7 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
                       <Phone className="w-8 h-8" />
                     </div>
                     <div>
-                      <div className="text-slate-400 text-sm font-bold uppercase tracking-widest">Hotline tư vấn</div>
+                      <div className="text-slate-400 text-sm font-bold uppercase tracking-widest">{t.contact.hotline}</div>
                       <div className="text-2xl font-bold text-white">(+84) 989 151 510 (Mr. Thắng)</div>
                     </div>
                   </div>
@@ -804,7 +1105,7 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
                       <Mail className="w-8 h-8" />
                     </div>
                     <div>
-                      <div className="text-slate-400 text-sm font-bold uppercase tracking-widest">Email hỗ trợ</div>
+                      <div className="text-slate-400 text-sm font-bold uppercase tracking-widest">{t.contact.email}</div>
                       <div className="text-2xl font-bold text-white">qlda@d-park.com.vn</div>
                     </div>
                   </div>
@@ -813,8 +1114,8 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
                       <MapPin className="w-8 h-8" />
                     </div>
                     <div>
-                      <div className="text-slate-400 text-sm font-bold uppercase tracking-widest">Địa chỉ trụ sở</div>
-                      <div className="text-xl font-bold text-white">Số 34, ngõ 291, đường Lê Lợi, P. Hoàng Văn Thụ, TP. Bắc Giang</div>
+                      <div className="text-slate-400 text-sm font-bold uppercase tracking-widest">{t.contact.address}</div>
+                      <div className="text-xl font-bold text-white">{t.topBar.address}</div>
                     </div>
                   </div>
                 </div>
@@ -823,24 +1124,24 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
                 <form className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-slate-400 uppercase tracking-widest">Họ và tên</label>
-                      <input type="text" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-cyan-500 transition-colors" placeholder="Nguyễn Văn A" />
+                      <label className="text-sm font-bold text-slate-400 uppercase tracking-widest">{t.contact.formName}</label>
+                      <input type="text" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-cyan-500 transition-colors" placeholder={t.contact.formNamePlaceholder} />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-slate-400 uppercase tracking-widest">Số điện thoại</label>
-                      <input type="tel" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-cyan-500 transition-colors" placeholder="090 123 4567" />
+                      <label className="text-sm font-bold text-slate-400 uppercase tracking-widest">{t.contact.formPhone}</label>
+                      <input type="tel" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-cyan-500 transition-colors" placeholder={t.contact.formPhonePlaceholder} />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-400 uppercase tracking-widest">Email</label>
-                    <input type="email" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-cyan-500 transition-colors" placeholder="email@congty.com" />
+                    <label className="text-sm font-bold text-slate-400 uppercase tracking-widest">{t.contact.formEmail}</label>
+                    <input type="email" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-cyan-500 transition-colors" placeholder={t.contact.formEmailPlaceholder} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-400 uppercase tracking-widest">Nội dung tư vấn</label>
-                    <textarea rows={4} className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-cyan-500 transition-colors" placeholder="Tôi quan tâm đến mặt bằng sản xuất..." />
+                    <label className="text-sm font-bold text-slate-400 uppercase tracking-widest">{t.contact.formContent}</label>
+                    <textarea rows={4} className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-cyan-500 transition-colors" placeholder={t.contact.formContentPlaceholder} />
                   </div>
                   <button className="w-full bg-cyan-500 text-white py-5 rounded-2xl font-bold text-lg hover:bg-cyan-400 transition-all shadow-xl shadow-cyan-500/20">
-                    Gửi yêu cầu tư vấn
+                    {t.contact.formSubmit}
                   </button>
                 </form>
               </div>
@@ -855,44 +1156,43 @@ className={`h-${isScrolled ? '10 md:h-12 lg:h-14' : '12 md:h-16 lg:h-20'} w-auto
           <div className="space-y-6">
             <Link to="/" className="flex items-center">
               <img 
-                src={`${import.meta.env.BASE_URL}image/logo demo.png`} 
+                src={`${import.meta.env.BASE_URL}image/LOGO3.png`} 
                 alt="D-Park Group Logo" 
-className="h-14 md:h-16 lg:h-20 w-auto object-contain transition-transform hover:scale-105" 
-
+                className="h-14 md:h-16 lg:h-20 w-auto object-contain transition-transform hover:scale-105 brightness-110" 
               />
             </Link>
             <p className="text-sm leading-relaxed">
-              Xây dựng hạ tầng kỹ thuật đồng bộ, hiện đại, thu hút đầu tư công nghệ cao tại Bắc Giang. Tâm điểm kết nối – Kiến tạo thịnh vượng.
+              {t.vision.quote}
             </p>
           </div>
 
           <div>
-            <h4 className="text-white font-bold mb-6">Liên kết nhanh</h4>
+            <h4 className="text-white font-bold mb-6">{t.footer.quickLinks}</h4>
             <ul className="space-y-4 text-sm">
-              {navItems.map(item => (
+              {navItems.slice(0, -1).map(item => (
                 <li key={item.id}>
-                  <button onClick={() => scrollToSection(item.id)} className="hover:text-cyan-500 transition-colors uppercase text-left">{item.name}</button>
+                  <button onClick={() => scrollToSection(item.id)} className="hover:text-cyan-500 transition-colors uppercase text-left">{t.nav[item.name as keyof typeof t.nav]}</button>
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="text-white font-bold mb-6">Lĩnh vực</h4>
+            <h4 className="text-white font-bold mb-6">{t.footer.fields}</h4>
             <ul className="space-y-4 text-sm">
-              <li>Phát triển Khu công nghiệp</li>
-              <li>Phát triển Khu đô thị</li>
-              <li>Sản xuất kinh doanh</li>
-              <li>Xây dựng hạ tầng</li>
+              <li>{t.footer.field1}</li>
+              <li>{t.footer.field2}</li>
+              <li>{t.footer.field3}</li>
+              <li>{t.footer.field4}</li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-white font-bold mb-6">Thông tin liên hệ</h4>
+            <h4 className="text-white font-bold mb-6">{t.footer.contactInfo}</h4>
             <ul className="space-y-4 text-sm">
               <li className="flex gap-3">
                 <MapPin className="w-5 h-5 text-cyan-500 shrink-0" />
-                <span>Số 34, ngõ 291, đường Lê Lợi, P. Hoàng Văn Thụ, TP. Bắc Giang</span>
+                <span>{t.topBar.address}</span>
               </li>
               <li className="flex gap-3">
                 <Phone className="w-5 h-5 text-cyan-500 shrink-0" />
@@ -906,12 +1206,12 @@ className="h-14 md:h-16 lg:h-20 w-auto object-contain transition-transform hover
           </div>
         </div>
         <div className="container mx-auto px-4 mt-16 pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
-          © {new Date().getFullYear()} D-PARK GROUP. All rights reserved.
+          {t.footer.copyright}
         </div>
       </footer>
 
       {/* Floating Info Button & Scroll to Top */}
-      <div className="fixed bottom-8 right-8 z-50 flex flex-col gap-4 items-end">
+      <div className="fixed bottom-8 right-8 z-50 flex flex-row gap-4 items-end">
         <AnimatePresence>
           {isScrolled && (
             <motion.button
@@ -930,16 +1230,16 @@ className="h-14 md:h-16 lg:h-20 w-auto object-contain transition-transform hover
           <div className="absolute bottom-full right-0 mb-4 w-72 bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
             <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-cyan-500" />
-              Thông tin nhanh
+              {t.floatingInfo.title}
             </h4>
             <div className="space-y-4 text-sm">
               <div className="p-3 bg-slate-50 rounded-xl">
-                <div className="font-bold text-slate-700 mb-1">Vị trí chiến lược</div>
-                <p className="text-slate-500">Cách Nội Bài 20km, Hà Nội 50km.</p>
+                <div className="font-bold text-slate-700 mb-1">{t.floatingInfo.strategicLocation}</div>
+                <p className="text-slate-500">{t.floatingInfo.strategicLocationDesc}</p>
               </div>
               <div className="p-3 bg-cyan-50 rounded-xl">
-                <div className="font-bold text-cyan-700 mb-1">Ưu đãi thuế</div>
-                <p className="text-cyan-600">Miễn 2 năm, giảm 50% trong 4 năm. Ưu đãi 10% trong 15 năm cho CNC.</p>
+                <div className="font-bold text-cyan-700 mb-1">{t.floatingInfo.taxIncentives}</div>
+                <p className="text-cyan-600">{t.floatingInfo.taxIncentivesDesc}</p>
               </div>
             </div>
           </div>
