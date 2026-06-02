@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   ArrowRight, Users, Zap, ShieldCheck, Map, Clock, DollarSign, 
-  ChevronLeft, ChevronRight, Droplets, Waves, Globe, Plane, 
-  Ship, CheckCircle2, Phone, Mail, MapPin, Menu, X, ChevronUp, Search
+  ChevronRight, Droplets, Waves, Globe, Plane, 
+  Ship, CheckCircle2, Phone, Mail, MapPin, Menu, X, ChevronUp
 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Language } from '../translations';
+import { AnimatedNumber } from '../hooks/useCountUp';
 
 const sliderImages = [
   `${import.meta.env.BASE_URL}image/Toàn cảnh-12.avif`,
@@ -36,44 +37,18 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState<string>('');
 
   const stats = [
-    { label: t.stats.scale, value: '102,85 ha', icon: Map, color: 'bg-blue-500' },
-    { label: t.stats.investment, value: '1.467,5 tỷ VNĐ', icon: DollarSign, color: 'bg-pink-500' },
-    { label: t.stats.deadline, value: 'Năm 2075', icon: Clock, color: 'bg-slate-700' },
-    { label: t.stats.labor, value: '4.500 người', icon: Users, color: 'bg-orange-500' },
+    { label: t.stats.scale, value: 102.85, suffix: ' ha', icon: Map, color: 'bg-blue-500' },
+    { label: t.stats.investment, value: 1467.5, suffix: ' tỷ VNĐ', icon: DollarSign, color: 'bg-pink-500' },
+    { label: t.stats.deadline, value: 2075, suffix: '', icon: Clock, color: 'bg-slate-700' },
+    { label: t.stats.labor, value: 4500, suffix: ' người', icon: Users, color: 'bg-orange-500' },
   ];
 
   const languages = [
-    { 
-      code: 'vi' as Language, 
-      name: 'Tiếng Việt', 
-      flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/vi.svg',
-      flagCode: 'vi',
-      href: '#'
-    },
-    { 
-      code: 'ja' as Language, 
-      name: 'Tiếng Nhật', 
-      flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/ja.svg',
-      flagCode: 'jp',
-      href: '#'
-    },
-    { 
-      code: 'zh' as Language, 
-      name: 'Tiếng Trung', 
-      flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/zh-hant.svg',
-      flagCode: 'cn',
-      href: '#'
-    },
-    { 
-      code: 'en' as Language, 
-      name: 'Tiếng Anh', 
-      flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/en.svg',
-      flagCode: 'us',
-      href: '#'
-    },
+    { code: 'vi' as Language, name: 'Tiếng Việt', flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/vi.svg', flagCode: 'vi', href: '#' },
+    { code: 'ja' as Language, name: 'Tiếng Nhật', flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/ja.svg', flagCode: 'jp', href: '#' },
+    { code: 'zh' as Language, name: 'Tiếng Trung', flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/zh-hant.svg', flagCode: 'cn', href: '#' },
+    { code: 'en' as Language, name: 'Tiếng Anh', flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/en.svg', flagCode: 'us', href: '#' },
   ];
-
-  const currentLangName = languages.find(l => l.code === language)?.name || 'Tiếng Việt';
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -125,9 +100,6 @@ export default function Home() {
       observer.disconnect();
     };
   }, []);
-
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -229,7 +201,7 @@ export default function Home() {
               >
                 <img 
                   src={`https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/${language === 'vi' ? 'vi' : language === 'ja' ? 'ja' : language === 'zh' ? 'zh-hant' : 'en'}.svg`}
-                  alt={currentLangName}
+                  alt={language}
                   className="w-5 h-4 object-cover rounded-sm"
                   onError={(e) => {
                     const flagMap: Record<string, string> = {
@@ -357,7 +329,7 @@ export default function Home() {
               {t.hero.description}
             </p>
             <div className="flex flex-wrap gap-6">
-              <button onClick={() => document.getElementById('quy-mo')?.scrollIntoView({ behavior: 'smooth' })} className="bg-white text-slate-900 px-10 py-5 rounded-2xl font-bold hover:bg-cyan-500 hover:text-white transition-all flex items-center gap-3 group text-lg shadow-xl shadow-black/20">
+              <button onClick={() => scrollToSection('quy-mo')} className="bg-white text-slate-900 px-10 py-5 rounded-2xl font-bold hover:bg-cyan-500 hover:text-white transition-all flex items-center gap-3 group text-lg shadow-xl shadow-black/20">
                 {t.hero.cta}
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </button>
@@ -386,7 +358,9 @@ export default function Home() {
                     </div>
                     <div className="space-y-1">
                       <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">{stat.label}</p>
-                      <h3 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">{stat.value}</h3>
+                      <h3 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
+                        <AnimatedNumber end={stat.value} suffix={stat.suffix} duration={2000} delay={index * 0.1} />
+                      </h3>
                     </div>
                   </div>
                 </motion.div>
@@ -497,19 +471,19 @@ export default function Home() {
                 <p>• {t.location.description1}</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <div className="text-cyan-600 font-bold">50 km</div>
+                    <div className="text-cyan-600 font-bold"><AnimatedNumber end={50} suffix=" km" duration={1500} delay={0.2} /></div>
                     <div className="text-sm text-slate-500">{t.location.distanceToHanoi}</div>
                   </div>
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <div className="text-cyan-600 font-bold">20 km</div>
+                    <div className="text-cyan-600 font-bold"><AnimatedNumber end={20} suffix=" km" duration={1500} delay={0.3} /></div>
                     <div className="text-sm text-slate-500">{t.location.distanceToBacNinh}</div>
                   </div>
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <div className="text-cyan-600 font-bold">30 km</div>
+                    <div className="text-cyan-600 font-bold"><AnimatedNumber end={30} suffix=" km" duration={1500} delay={0.4} /></div>
                     <div className="text-sm text-slate-500">{t.location.distanceToBacGiang}</div>
                   </div>
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <div className="text-cyan-600 font-bold">65 km</div>
+                    <div className="text-cyan-600 font-bold"><AnimatedNumber end={65} suffix=" km" duration={1500} delay={0.5} /></div>
                     <div className="text-sm text-slate-500">{t.location.distanceToThaiNguyen}</div>
                   </div>
                 </div>
@@ -522,16 +496,16 @@ export default function Home() {
           {/* Giao thông cards merged here */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 border-t border-slate-100">
             {[
-              { title: t.location.air, value: '20km', desc: t.location.airDesc, icon: Plane, color: 'text-blue-500' },
-              { title: t.location.sea, value: '120km', desc: t.location.seaDesc, icon: Ship, color: 'text-cyan-500' },
-              { title: t.location.road, value: '4km', desc: t.location.roadDesc, icon: Map, color: 'text-slate-900' },
+              { title: t.location.air, value: 20, desc: t.location.airDesc, icon: Plane, color: 'text-blue-500' },
+              { title: t.location.sea, value: 120, desc: t.location.seaDesc, icon: Ship, color: 'text-cyan-500' },
+              { title: t.location.road, value: 4, desc: t.location.roadDesc, icon: Map, color: 'text-slate-900' },
             ].map((item, index) => (
               <motion.div 
                 key={item.title} 
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.5, delay: 0.1 + index * 0.1 }}
                 whileHover={{ y: -10 }}
                 className="p-10 rounded-[40px] bg-slate-50 border border-slate-100 text-center shadow-xl shadow-slate-200/20"
               >
@@ -539,7 +513,7 @@ export default function Home() {
                   <item.icon className={`w-8 h-8 ${item.color}`} />
                 </div>
                 <h4 className="text-slate-400 font-bold uppercase tracking-widest text-xs mb-4">{item.title}</h4>
-                <div className="text-5xl font-black mb-6 text-slate-900">{item.value}</div>
+                <div className="text-5xl font-black mb-6 text-slate-900"><AnimatedNumber end={item.value} suffix=" km" duration={1500} delay={0.2 + index * 0.1} /></div>
                 <p className="text-slate-500 font-medium leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
@@ -617,10 +591,10 @@ export default function Home() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 {[
-                  { value: '102,85 ha', label: t.scale.totalArea },
-                  { value: '63,72 ha', label: t.scale.industrialLand },
-                  { value: '2,73 ha', label: t.scale.serviceLand },
-                  { value: '5,47 ha', label: t.scale.techLand },
+                  { value: 102.85, label: t.scale.totalArea },
+                  { value: 63.72, label: t.scale.industrialLand },
+                  { value: 2.73, label: t.scale.serviceLand },
+                  { value: 5.47, label: t.scale.techLand },
                 ].map((item, index) => (
                   <motion.div 
                     key={item.label}
@@ -630,7 +604,7 @@ export default function Home() {
                     transition={{ delay: index * 0.1 }}
                     className="p-8 bg-white/5 backdrop-blur-md rounded-3xl border border-white/10"
                   >
-                    <div className="text-4xl font-black text-cyan-400 mb-2">{item.value}</div>
+                    <div className="text-4xl font-black text-cyan-400 mb-2"><AnimatedNumber end={item.value} suffix=" ha" duration={1500} decimals={2} delay={0.2 + index * 0.1} /></div>
                     <div className="text-sm font-bold text-slate-400 uppercase tracking-widest">{item.label}</div>
                   </motion.div>
                 ))}
@@ -714,7 +688,7 @@ export default function Home() {
               >
                 <h4 className="text-xl font-bold text-slate-900 mb-8">{t.cost.minWage}</h4>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-6xl font-black text-cyan-600">160$</span>
+                  <span className="text-6xl font-black text-cyan-600"><AnimatedNumber end={160} prefix="$" duration={1500} delay={0.3} /></span>
                   <span className="text-slate-400 font-bold">{t.cost.perMonth}</span>
                 </div>
                 <p className="mt-6 text-slate-500 leading-relaxed">Áp dụng cho Vùng 3 theo quy định của Chính phủ Việt Nam, giúp tối ưu chi phí nhân công cho doanh nghiệp.</p>
@@ -728,8 +702,7 @@ export default function Home() {
               >
                 <h4 className="text-xl font-bold text-slate-900 mb-8">{t.cost.totalInvestment}</h4>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-black text-slate-900">1.467,5</span>
-                  <span className="text-slate-400 font-bold">tỷ VNĐ</span>
+                  <span className="text-4xl font-black text-slate-900"><AnimatedNumber end={1467.5} suffix=" tỷ VNĐ" duration={1500} decimals={1} delay={0.4} /></span>
                 </div>
                 <p className="mt-6 text-slate-500 leading-relaxed">{t.cost.investmentDesc}</p>
               </motion.div>
@@ -898,7 +871,7 @@ export default function Home() {
                   className={`flex items-center gap-8 ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}
                 >
                   <div className="w-16 h-16 rounded-full bg-cyan-500 text-white flex items-center justify-center font-black text-xl shrink-0 shadow-lg shadow-cyan-500/30 z-10">
-                    {String(index + 1).padStart(2, '0')}
+                    <AnimatedNumber end={index + 1} duration={800} delay={0.1 + index * 0.05} />
                   </div>
                   <div className={`p-8 bg-slate-50 rounded-[32px] border border-slate-100 flex-grow hover:bg-white hover:shadow-xl transition-all ${index % 2 !== 0 ? 'lg:text-right' : ''}`}>
                     <h4 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h4>
@@ -1211,7 +1184,7 @@ export default function Home() {
       </footer>
 
       {/* Floating Info Button & Scroll to Top */}
-      <div className="fixed bottom-8 right-8 z-50 flex flex-row gap-4 items-end">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 lg:bottom-8 lg:right-8 z-50 flex flex-col sm:flex-row gap-3 sm:gap-4 items-end sm:items-center">
         <AnimatePresence>
           {isScrolled && (
             <motion.button
@@ -1219,32 +1192,32 @@ export default function Home() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.5 }}
               onClick={scrollToTop}
-              className="w-12 h-12 bg-slate-900 text-white rounded-full shadow-xl flex items-center justify-center hover:bg-cyan-500 transition-colors"
+              className="w-11 h-11 sm:w-12 sm:h-12 bg-slate-900 text-white rounded-full shadow-xl flex items-center justify-center hover:bg-cyan-500 transition-colors"
             >
-              <ChevronUp className="w-6 h-6" />
+              <ChevronUp className="w-5 h-5 sm:w-6 sm:h-6" />
             </motion.button>
           )}
         </AnimatePresence>
 
         <div className="relative group">
-          <div className="absolute bottom-full right-0 mb-4 w-72 bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-            <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-cyan-500" />
+          <div className="absolute bottom-full right-0 mb-4 w-64 sm:w-72 bg-white rounded-3xl shadow-2xl border border-slate-100 p-5 sm:p-6 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+            <h4 className="font-bold text-slate-900 mb-3 sm:mb-4 flex items-center gap-2 text-sm sm:text-base">
+              <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-500" />
               {t.floatingInfo.title}
             </h4>
-            <div className="space-y-4 text-sm">
-              <div className="p-3 bg-slate-50 rounded-xl">
+            <div className="space-y-3 sm:space-y-4 text-xs sm:text-sm">
+              <div className="p-2 sm:p-3 bg-slate-50 rounded-xl">
                 <div className="font-bold text-slate-700 mb-1">{t.floatingInfo.strategicLocation}</div>
                 <p className="text-slate-500">{t.floatingInfo.strategicLocationDesc}</p>
               </div>
-              <div className="p-3 bg-cyan-50 rounded-xl">
+              <div className="p-2 sm:p-3 bg-cyan-50 rounded-xl">
                 <div className="font-bold text-cyan-700 mb-1">{t.floatingInfo.taxIncentives}</div>
                 <p className="text-cyan-600">{t.floatingInfo.taxIncentivesDesc}</p>
               </div>
             </div>
           </div>
-          <button className="w-14 h-14 bg-cyan-500 text-white rounded-full shadow-lg shadow-cyan-500/40 flex items-center justify-center hover:scale-110 transition-transform">
-            <Zap className="w-6 h-6" />
+          <button className="w-12 h-12 sm:w-14 sm:h-14 bg-cyan-500 text-white rounded-full shadow-lg shadow-cyan-500/40 flex items-center justify-center hover:scale-110 transition-transform">
+            <Zap className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
       </div>

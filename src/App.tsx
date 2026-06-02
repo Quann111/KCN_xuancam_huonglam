@@ -1,13 +1,12 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 
 export default function App() {
   return (
-    <Router basename="/KCN_xuancam_huonglam">
+    <BrowserRouter basename="/KCN_xuancam_huonglam">
       <Routes>
         <Route path="/" element={<Home />} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
