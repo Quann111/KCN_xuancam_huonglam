@@ -150,14 +150,14 @@ export default function Home() {
 
       {/* Main Header */}
       <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
-        <div className={`container mx-auto px-4 py-${isScrolled ? '2' : '4'} flex justify-between items-center transition-all duration-300 gap-12`}>
+        <div className={`container mx-auto px-4 py-${isScrolled ? '2' : '4'} flex justify-center items-center transition-all duration-300 gap-12`}>
 
           {/* Logo */}
           <Link to="/" className="flex items-center shrink-0">
             <img 
-              src={`${import.meta.env.BASE_URL}image/LOGO3.png`} 
+              src={`${import.meta.env.BASE_URL}image/LOGO4.png`} 
               alt="D-Park Group Logo" 
-              className={`h-${isScrolled ? '8 md:h-10 lg:h-12' : '10 md:h-12 lg:h-14'} w-auto object-contain transition-all duration-300 hover:scale-${isScrolled ? '102' : '105'}`} 
+              className={`h-${isScrolled ? '5 md:h-6 lg:h-8' : '6 md:h-8 lg:h-10'} w-auto object-contain transition-all duration-300 hover:scale-${isScrolled ? '102' : '105'}`} 
             />
           </Link>
 
@@ -323,7 +323,7 @@ export default function Home() {
               {t.hero.badge}
             </motion.span>
             <h1 className="text-3xl md:text-5xl lg:text-7xl font-extrabold leading-tight mb-8 tracking-tight md:whitespace-nowrap">
-              {t.hero.titlePart1} <span className="text-cyan-400">{t.hero.titlePart2}</span>
+              {t.hero.titlePart1} <span className="text-red-500">{t.hero.titlePart2}</span>
             </h1>
             <p className="text-base md:text-lg text-slate-200 mb-12 leading-relaxed font-light md:whitespace-nowrap">
               {t.hero.description}
@@ -1129,7 +1129,7 @@ export default function Home() {
           <div className="space-y-6">
             <Link to="/" className="flex items-center">
               <img 
-                src={`${import.meta.env.BASE_URL}image/LOGO3.png`} 
+                src={`${import.meta.env.BASE_URL}image/LOGO4.png`} 
                 alt="D-Park Group Logo" 
                 className="h-14 md:h-16 lg:h-20 w-auto object-contain transition-transform hover:scale-105 brightness-110" 
               />
