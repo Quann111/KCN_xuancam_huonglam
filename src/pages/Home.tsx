@@ -11,8 +11,8 @@ import { Language } from '../translations';
 import { AnimatedNumber } from '../hooks/useCountUp';
 
 const sliderImages = [
-  `${import.meta.env.BASE_URL}image/Toàn cảnh-12.avif`,
-  `${import.meta.env.BASE_URL}image/Toàn cảnh-13.avif`,
+  `${import.meta.env.BASE_URL}image/toan-canh-12.avif`,
+  `${import.meta.env.BASE_URL}image/toan-canh-13.avif`,
 ];
 
 const navItems = [
@@ -419,7 +419,7 @@ export default function Home() {
               className="relative"
             >
               <div className="rounded-[40px] overflow-hidden shadow-2xl">
-                <img src={`${import.meta.env.BASE_URL}image/AIComplex_1776166732689.avif`} alt="Tầm nhìn dự án" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                <img src={`${import.meta.env.BASE_URL}image/AIComplex_1776166732689.avif`} alt="Tầm nhìn tổng quan KCN Xuân Cẩm Hương Lâm - Hạ tầng hiện đại" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               </div>
               <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-cyan-500 rounded-3xl -z-10" />
             </motion.div>
@@ -441,7 +441,7 @@ export default function Home() {
                 >
                   <img 
                     src={`${import.meta.env.BASE_URL}image/AIComplex_1776167182236.avif`} 
-                    alt="Vị trí dự án" 
+                    alt="Vị trí chiến lược KCN Xuân Cẩm Hương Lâm - Kết nối vùng kinh tế Bắc Giang" 
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
                   />
@@ -637,7 +637,7 @@ export default function Home() {
               <div className="rounded-[40px] overflow-hidden shadow-2xl border-4 border-white/10">
                 <img 
                   src={`${import.meta.env.BASE_URL}image/AIComplex_1777918636053.avif`} 
-                  alt="Quy hoạch KCN" 
+                  alt="Quy hoạch chi tiết KCN Xuân Cẩm Hương Lâm - 102.85 ha" 
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                 />
@@ -790,7 +790,7 @@ export default function Home() {
             >
               <div className="relative">
                 <div className="rounded-[40px] overflow-hidden shadow-2xl">
-                  <img src={`${import.meta.env.BASE_URL}image/AIComplex_1776166944793.avif`} alt="Tiện ích dự án" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  <img src={`${import.meta.env.BASE_URL}image/AIComplex_1776166944793.avif`} alt="Tiện ích KCN Xuân Cẩm Hương Lâm - Y tế, Giáo dục, Thương mại, Thể thao" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                 </div>
                 <div className="absolute -top-6 -left-6 w-24 h-24 bg-cyan-500 rounded-full blur-2xl opacity-20" />
               </div>
