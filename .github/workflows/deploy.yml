@@ -29,7 +29,7 @@ jobs:
         run: npm run build
         env:
           CI: false
-          VITE_BASE_URL: '/KCN_xuancam_huonglam/'
+          VITE_BASE_URL: '/'
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
