@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://www.xuancamhuonglamip.vn/</loc>
-    <lastmod>2026-07-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
+  <url><loc>https://www.xuancamhuonglamip.vn/</loc></url>
+  <url><loc>https://www.xuancamhuonglamip.vn/giai-doan-1</loc></url>
+  <url><loc>https://www.xuancamhuonglamip.vn/giai-doan-2</loc></url>
+  <url><loc>https://www.xuancamhuonglamip.vn/gioi-thieu-d-park-group</loc></url>
+  <url><loc>https://www.xuancamhuonglamip.vn/tin-tuc</loc></url>
 </urlset>

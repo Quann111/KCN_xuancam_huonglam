@@ -9,6 +9,12 @@ import {
 import { useLanguage } from '../contexts/LanguageContext';
 import { Language } from '../translations';
 import { AnimatedNumber } from '../hooks/useCountUp';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import { formatNewsDate } from '../lib/news-utils';
+import { NewsPost, supabase } from '../lib/supabase';
+import SeoHead from '../components/SeoHead';
+import { ORGANIZATION_LOGO, ORGANIZATION_NAME, SITE_URL } from '../lib/site-seo';
 
 const sliderImages = [
   `${import.meta.env.BASE_URL}image/toan-canh-12.avif`,
@@ -35,6 +41,7 @@ export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('');
+  const [latestPosts, setLatestPosts] = useState<NewsPost[]>([]);
 
   const stats = [
     { label: t.stats.scale, value: 102.85, suffix: ' ha', icon: Map, color: 'bg-blue-500' },
@@ -101,6 +108,26 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    const loadLatestPosts = async () => {
+      const { data } = await supabase
+        .from('news_posts')
+        .select('*')
+        .eq('status', 'published')
+        .order('published_at', { ascending: false })
+        .limit(3);
+      setLatestPosts((data ?? []) as NewsPost[]);
+    };
+    void loadLatestPosts();
+  }, []);
+
+  useEffect(() => {
+    const sectionId = window.location.hash.slice(1);
+    if (sectionId) {
+      window.setTimeout(() => document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+    }
+  }, []);
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -128,8 +155,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col font-sans text-slate-900 bg-white">
+      <SeoHead title="Khu công nghiệp Xuân Cẩm - Hương Lâm | Giai đoạn 1 & 2 | D-Park Group" description="Khu công nghiệp Xuân Cẩm - Hương Lâm: thông tin giai đoạn 1, giai đoạn 2 và tư vấn đầu tư từ D-Park Group." path="/" image={ORGANIZATION_LOGO}>
+        <script type="application/ld+json">{JSON.stringify({ '@context': 'https://schema.org', '@graph': [{ '@type': 'Organization', name: ORGANIZATION_NAME, url: SITE_URL, logo: ORGANIZATION_LOGO }, { '@type': 'WebSite', name: 'Khu công nghiệp Xuân Cẩm - Hương Lâm', url: SITE_URL }, { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Trang chủ', item: SITE_URL }] }] })}</script>
+      </SeoHead>
+      <Header />
       {/* Top Bar */}
-      <div className="hidden lg:block border-b border-slate-100 py-3 bg-white">
+      <div className="hidden">
         <div className="container mx-auto px-4 flex justify-end items-center gap-8 text-xs text-slate-500 font-medium">
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 text-red-600" />
@@ -149,7 +180,7 @@ export default function Home() {
       </div>
 
       {/* Main Header */}
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
+      <header className="hidden">
         <div className={`container mx-auto px-4 py-${isScrolled ? '2' : '4'} flex justify-center items-center transition-all duration-300 gap-12`}>
 
           {/* Logo */}
@@ -335,6 +366,18 @@ export default function Home() {
               </button>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      <section className="bg-white py-16 md:py-20">
+        <div className="container mx-auto max-w-6xl px-4">
+          <p className="text-sm font-bold uppercase tracking-[0.18em] text-cyan-700">Thông tin dự án</p>
+          <h2 className="mt-3 text-3xl font-bold text-slate-900">Khu công nghiệp Xuân Cẩm - Hương Lâm</h2>
+          <p className="mt-4 max-w-3xl leading-8 text-slate-600">D-Park Group là đầu mối thông tin cho hai giai đoạn của dự án. Tìm hiểu từng giai đoạn để nhận nội dung quy hoạch, hạ tầng và tư vấn phù hợp.</p>
+          <div className="mt-8 grid gap-5 md:grid-cols-2">
+            <Link to="/giai-doan-1" className="border border-slate-200 p-6 transition-colors hover:border-cyan-500"><h3 className="text-xl font-bold text-slate-900">Giai đoạn 1</h3><p className="mt-3 leading-7 text-slate-600">Tìm hiểu hạ tầng giai đoạn 1, quy hoạch và định hướng thu hút đầu tư.</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-cyan-700">Xem thông tin quy hoạch <ArrowRight className="size-4" /></span></Link>
+            <Link to="/giai-doan-2" className="border border-slate-200 p-6 transition-colors hover:border-cyan-500"><h3 className="text-xl font-bold text-slate-900">Giai đoạn 2</h3><p className="mt-3 leading-7 text-slate-600">Xem thông tin đầu tư giai đoạn 2 và định hướng phát triển mở rộng.</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-cyan-700">Thông tin đầu tư giai đoạn 2 <ArrowRight className="size-4" /></span></Link>
+          </div>
         </div>
       </section>
 
@@ -943,7 +986,7 @@ export default function Home() {
       </section>
 
       {/* TIN TỨC Section */}
-      <section id="tin-tuc" className="py-24 bg-white">
+      <section id="tin-tuc-legacy" className="hidden">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-end mb-16">
             <motion.div 
@@ -992,6 +1035,18 @@ export default function Home() {
       </section>
 
       {/* TUYỂN DỤNG Section */}
+      <section id="tin-tuc" className="py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-14">
+            <div className="space-y-4"><span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">Tin tức & Sự kiện</span><h2 className="text-4xl md:text-6xl font-bold tracking-tighter">Cập nhật mới nhất</h2></div>
+            <Link to="/tin-tuc" onClick={() => window.scrollTo({ top: 0 })} className="inline-flex items-center gap-2 text-cyan-600 font-bold hover:gap-4 transition-all">Xem tất cả <ArrowRight className="w-5 h-5" /></Link>
+          </div>
+          {latestPosts.length === 0 ? <p className="text-slate-500">Chưa có bài viết nào được xuất bản.</p> : <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {latestPosts.map((news) => <article key={news.id} className="group"><Link to={`/tin-tuc/${news.slug}`} target="_blank" rel="noopener noreferrer" className="block"><div className="relative h-64 rounded-lg overflow-hidden mb-6 bg-slate-100">{news.cover_image_url ? <img src={news.cover_image_url} alt={news.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" /> : <div className="h-full flex items-center justify-center text-slate-400">Tin tức</div>}<div className="absolute top-4 left-4 bg-white/90 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-slate-900">{news.category}</div></div><div className="space-y-3"><div className="text-slate-400 text-xs font-bold uppercase tracking-widest">{formatNewsDate(news.published_at)}</div><h3 className="text-xl font-bold text-slate-900 group-hover:text-cyan-600 transition-colors leading-tight">{news.title}</h3><p className="text-sm leading-relaxed text-slate-600">{news.excerpt}</p></div></Link></article>)}
+          </div>}
+        </div>
+      </section>
+
       <section id="tuyen-dung" className="py-24 bg-slate-50">
         <div className="container mx-auto px-4">
           <motion.div 
@@ -1124,7 +1179,7 @@ export default function Home() {
       </section>
     </main>
       {/* FOOTER */}
-      <footer className="bg-slate-900 text-slate-300 py-16">
+      <footer className="hidden">
         <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="space-y-6">
             <Link to="/" className="flex items-center">
@@ -1183,6 +1238,7 @@ export default function Home() {
         </div>
       </footer>
 
+      <Footer />
       {/* Floating Info Button & Scroll to Top */}
       <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 lg:bottom-8 lg:right-8 z-50 flex flex-col sm:flex-row gap-3 sm:gap-4 items-end sm:items-center">
         <AnimatePresence>
