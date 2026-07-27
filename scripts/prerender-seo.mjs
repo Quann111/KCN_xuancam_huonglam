@@ -36,7 +36,9 @@ function html(page) {
   return `<!doctype html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="google-site-verification" content="p1K4sCKCP2tdr3F0ZLrmMcuJhNQn8RaUdbl-SMfTgGw"><title>${esc(page.title)}</title><meta name="description" content="${esc(page.description)}"><link rel="canonical" href="${canonical}"><meta property="og:type" content="website"><meta property="og:title" content="${esc(page.title)}"><meta property="og:description" content="${esc(page.description)}"><meta property="og:url" content="${canonical}"><meta property="og:image" content="${defaultImage}"><script type="application/ld+json">${JSON.stringify(schema)}</script>${css}</head><body><div id="root"><main><h1>${esc(page.heading)}</h1><p>${esc(page.body)}</p><nav>${page.links.map(([href, text]) => `<a href="${href}">${esc(text)}</a>`).join(' ')}</nav></main></div>${script}</body></html>`;
 }
 for (const page of pages) {
-  const output = page.path === '/' ? resolve(dist, 'index.html') : resolve(dist, page.path.slice(1), 'index.html');
+  // Bỏ qua trang chủ để không ghi đè index.html của React SPA
+  if (page.path === '/') continue;
+  const output = resolve(dist, page.path.slice(1), 'index.html');
   await mkdir(dirname(output), { recursive: true });
   await writeFile(output, html(page), 'utf8');
 }
