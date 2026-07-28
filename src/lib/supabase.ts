@@ -3,17 +3,11 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-let supabase: SupabaseClient;
-
-if (supabaseUrl && supabaseAnonKey) {
-  supabase = createClient(supabaseUrl, supabaseAnonKey);
-} else {
-  // Fallback dummy client khi thiếu env vars (build trên CI, chưa cấu hình Supabase)
-  console.warn('Thiếu VITE_SUPABASE_URL hoặc VITE_SUPABASE_ANON_KEY – Supabase sẽ không hoạt động.');
-  supabase = createClient('https://placeholder.supabase.co', 'placeholder-key');
-}
-
-export { supabase };
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+export const supabaseConfigMessage = 'Website chưa được cấu hình kết nối Supabase. Vui lòng kiểm tra GitHub Actions Secrets.';
+export const supabase: SupabaseClient | null = isSupabaseConfigured
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 export type NewsStatus = 'draft' | 'published';
 

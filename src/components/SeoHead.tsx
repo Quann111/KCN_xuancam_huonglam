@@ -8,10 +8,12 @@ interface SeoHeadProps {
   path: string;
   image?: string;
   type?: 'website' | 'article';
+  datePublished?: string;
+  dateModified?: string;
   children?: ReactNode;
 }
 
-export default function SeoHead({ title, description, path, image = `${SITE_URL}/image/AIComplex_1776166732689.avif`, type = 'website', children }: SeoHeadProps) {
+export default function SeoHead({ title, description, path, image = `${SITE_URL}/image/AIComplex_1776166732689.avif`, type = 'website', datePublished, dateModified, children }: SeoHeadProps) {
   const url = `${SITE_URL}${path}`;
   return <Helmet>
     <title>{title}</title>
@@ -35,6 +37,8 @@ export default function SeoHead({ title, description, path, image = `${SITE_URL}
       description,
       url,
       primaryImageOfPage: image,
+      ...(datePublished && { datePublished }),
+      ...(dateModified && { dateModified }),
       publisher: { '@type': 'Organization', name: ORGANIZATION_NAME, url: SITE_URL, logo: ORGANIZATION_LOGO },
     })}</script>
     {children}

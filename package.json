@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "npm run build:app && node scripts/generate-sitemap.mjs && node scripts/prerender-seo.mjs",
+    "build:ci": "node scripts/verify-supabase-env.mjs && npm run build",
     "build:app": "tsc && vite build",
     "preview": "vite preview",
     "lint": "tsc --noEmit",

@@ -109,8 +109,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const client = supabase;
+    if (!client) return;
     const loadLatestPosts = async () => {
-      const { data } = await supabase
+      const { data } = await client
         .from('news_posts')
         .select('*')
         .eq('status', 'published')

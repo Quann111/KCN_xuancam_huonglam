@@ -14,7 +14,9 @@ export default function NewsDetail() {
 
   useEffect(() => {
     const loadPost = async () => {
-      const { data } = await supabase.from('news_posts').select('*').eq('slug', slug ?? '').eq('status', 'published').maybeSingle();
+      const client = supabase;
+      if (!client) { setLoading(false); return; }
+      const { data } = await client.from('news_posts').select('*').eq('slug', slug ?? '').eq('status', 'published').maybeSingle();
       setPost(data as NewsPost | null);
       setLoading(false);
     };
