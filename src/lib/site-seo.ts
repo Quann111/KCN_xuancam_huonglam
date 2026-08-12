@@ -1,5 +1,5 @@
 export const SITE_URL = 'https://www.xuancamhuonglamip.vn';
-export const SITE_NAME = 'Khu công nghiệp Xuân Cẩm - Hương Lâm';
+export const SITE_NAME = 'Khu Công nghiệp Xuân Cẩm - Hương Lâm';
 export const ORGANIZATION_NAME = 'D-Park Group';
 export const ORGANIZATION_LOGO = `${SITE_URL}/image/LOGO4.png`;
 
@@ -18,10 +18,10 @@ export const phasePages: Record<string, PhasePage> = {
   'giai-doan-1': {
     path: '/giai-doan-1',
     eyebrow: 'Giai đoạn 1',
-    title: 'Khu công nghiệp Xuân Cẩm - Hương Lâm Giai đoạn 1 | D-Park Group',
-    description: 'Thông tin quy hoạch, hạ tầng kỹ thuật, vị trí và định hướng thu hút đầu tư tại Khu công nghiệp Xuân Cẩm - Hương Lâm giai đoạn 1.',
+    title: 'Khu Công nghiệp Xuân Cẩm - Hương Lâm GĐ1, Bắc Ninh',
+    description: 'KCN Xuân Cẩm - Hương Lâm giai đoạn 1 có quy mô 102,85 ha. Xem vị trí, quy hoạch, pháp lý, hạ tầng, ngành nghề và tiến độ đầu tư mới nhất.',
     image: `${SITE_URL}/image/AIComplex_1777918636053.avif`,
-    overview: 'Giai đoạn 1 là nền tảng phát triển hạ tầng kỹ thuật đồng bộ của Khu công nghiệp Xuân Cẩm - Hương Lâm, sẵn sàng phục vụ nhu cầu đầu tư sản xuất theo định hướng hiện đại và bền vững.',
+    overview: 'Giai đoạn 1 là nền tảng phát triển hạ tầng kỹ thuật đồng bộ của Khu Công nghiệp Xuân Cẩm - Hương Lâm, sẵn sàng phục vụ nhu cầu đầu tư sản xuất theo định hướng hiện đại và bền vững.',
     highlights: [
       ['Quy mô định hướng', '102,85 ha theo thông tin giới thiệu dự án hiện hành.'],
       ['Hạ tầng kỹ thuật', 'Giao thông nội khu, điện, nước, viễn thông và xử lý nước thải được triển khai đồng bộ theo quy hoạch.'],
@@ -29,17 +29,17 @@ export const phasePages: Record<string, PhasePage> = {
     ],
     faqs: [
       { question: 'Giai đoạn 1 có quy mô bao nhiêu?', answer: 'Thông tin giới thiệu hiện hành ghi nhận quy mô định hướng 102,85 ha. D-Park Group sẽ cập nhật số liệu chính thức khi có tài liệu được phê duyệt công khai.' },
-      { question: 'Những ngành nghề nào được ưu tiên?', answer: 'Khu công nghiệp hướng tới các ngành công nghệ cao, điện tử, cơ khí chính xác, công nghiệp hỗ trợ và các lĩnh vực phù hợp với quy hoạch.' },
+      { question: 'Những ngành nghề nào được ưu tiên?', answer: 'Khu Công nghiệp hướng tới các ngành công nghệ cao, điện tử, cơ khí chính xác, công nghiệp hỗ trợ và các lĩnh vực phù hợp với quy hoạch.' },
       { question: 'Làm thế nào để nhận tư vấn đầu tư?', answer: 'Doanh nghiệp có thể liên hệ D-Park Group để nhận thông tin vị trí, hạ tầng, quy trình và hồ sơ phù hợp với nhu cầu đầu tư.' },
     ],
   },
   'giai-doan-2': {
     path: '/giai-doan-2',
     eyebrow: 'Giai đoạn 2',
-    title: 'Khu công nghiệp Xuân Cẩm - Hương Lâm Giai đoạn 2 | D-Park Group',
-    description: 'Cập nhật thông tin đầu tư, quy hoạch, kết nối và định hướng phát triển Khu công nghiệp Xuân Cẩm - Hương Lâm giai đoạn 2.',
+    title: 'Khu Công nghiệp Xuân Cẩm - Hương Lâm GĐ2, Bắc Ninh',
+    description: 'Cập nhật Khu Công nghiệp Xuân Cẩm - Hương Lâm giai đoạn 2 tại Bắc Ninh: quy mô, vị trí, quy hoạch, tiến độ và cơ hội đầu tư cho doanh nghiệp.',
     image: `${SITE_URL}/image/AIComplex_1776167182236.avif`,
-    overview: 'Giai đoạn 2 mở rộng định hướng phát triển của Khu công nghiệp Xuân Cẩm - Hương Lâm. D-Park Group là đầu mối cập nhật thông tin đầu tư theo tài liệu và tiến độ được phép công bố.',
+    overview: 'Giai đoạn 2 mở rộng định hướng phát triển của Khu Công nghiệp Xuân Cẩm - Hương Lâm. D-Park Group là đầu mối cập nhật thông tin đầu tư theo tài liệu và tiến độ được phép công bố.',
     highlights: [
       ['Thông tin đầu tư', 'Các chỉ tiêu pháp lý, quy mô và tiến độ được cập nhật theo hồ sơ chính thức được D-Park Group công bố.'],
       ['Kết nối vùng', 'Định hướng tận dụng lợi thế kết nối khu vực để hỗ trợ hoạt động sản xuất, logistics và tiếp cận nguồn nhân lực.'],

@@ -157,8 +157,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col font-sans text-slate-900 bg-white">
-      <SeoHead title="Khu công nghiệp Xuân Cẩm - Hương Lâm | Giai đoạn 1 & 2 | D-Park Group" description="Khu công nghiệp Xuân Cẩm - Hương Lâm: thông tin giai đoạn 1, giai đoạn 2 và tư vấn đầu tư từ D-Park Group." path="/" image={ORGANIZATION_LOGO}>
-        <script type="application/ld+json">{JSON.stringify({ '@context': 'https://schema.org', '@graph': [{ '@type': 'Organization', name: ORGANIZATION_NAME, url: SITE_URL, logo: ORGANIZATION_LOGO }, { '@type': 'WebSite', name: 'Khu công nghiệp Xuân Cẩm - Hương Lâm', url: SITE_URL }, { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Trang chủ', item: SITE_URL }] }] })}</script>
+      <SeoHead title="Khu Công nghiệp Xuân Cẩm - Hương Lâm, Bắc Ninh" description="Khu Công nghiệp Xuân Cẩm - Hương Lâm tại xã Xuân Cẩm, tỉnh Bắc Ninh, quy mô 224,02 ha. Cập nhật vị trí, quy hoạch, hạ tầng và thông tin đầu tư." path="/" image={ORGANIZATION_LOGO}>
+        <script type="application/ld+json">{JSON.stringify({ '@context': 'https://schema.org', '@graph': [{ '@type': 'Organization', name: ORGANIZATION_NAME, url: SITE_URL, logo: ORGANIZATION_LOGO }, { '@type': 'WebSite', name: 'Khu Công nghiệp Xuân Cẩm - Hương Lâm', url: SITE_URL }, { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Trang chủ', item: SITE_URL }] }] })}</script>
       </SeoHead>
       <Header />
       {/* Top Bar */}
@@ -374,7 +374,7 @@ export default function Home() {
       <section className="bg-white py-16 md:py-20">
         <div className="container mx-auto max-w-6xl px-4">
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-cyan-700">Thông tin dự án</p>
-          <h2 className="mt-3 text-3xl font-bold text-slate-900">Khu công nghiệp Xuân Cẩm - Hương Lâm</h2>
+          <h2 className="mt-3 text-3xl font-bold text-slate-900">Khu Công nghiệp Xuân Cẩm - Hương Lâm</h2>
           <p className="mt-4 max-w-3xl leading-8 text-slate-600">D-Park Group là đầu mối thông tin cho hai giai đoạn của dự án. Tìm hiểu từng giai đoạn để nhận nội dung quy hoạch, hạ tầng và tư vấn phù hợp.</p>
           <div className="mt-8 grid gap-5 md:grid-cols-2">
             <Link to="/giai-doan-1" className="border border-slate-200 p-6 transition-colors hover:border-cyan-500"><h3 className="text-xl font-bold text-slate-900">Giai đoạn 1</h3><p className="mt-3 leading-7 text-slate-600">Tìm hiểu hạ tầng giai đoạn 1, quy hoạch và định hướng thu hút đầu tư.</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-cyan-700">Xem thông tin quy hoạch <ArrowRight className="size-4" /></span></Link>

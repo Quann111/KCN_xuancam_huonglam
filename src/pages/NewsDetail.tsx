@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { CalendarDays, ChevronLeft } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
+import NewsContent from '../components/NewsContent';
 import PublicLayout from '../components/PublicLayout';
 import SeoHead from '../components/SeoHead';
-import { formatNewsDate, getAbsoluteNewsUrl, parseNewsContent } from '../lib/news-utils';
+import { formatNewsDate, getAbsoluteNewsUrl } from '../lib/news-utils';
 import { ORGANIZATION_LOGO, ORGANIZATION_NAME } from '../lib/site-seo';
 import { NewsPost, supabase } from '../lib/supabase';
 
@@ -46,7 +47,7 @@ export default function NewsDetail() {
       <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
     </SeoHead>
     <article><header className="bg-slate-950 py-16 text-white md:py-24"><div className="container mx-auto max-w-4xl px-4"><Link to="/tin-tuc" className="inline-flex items-center gap-2 text-sm font-bold text-cyan-400 hover:text-cyan-300"><ChevronLeft className="size-4" />Tất cả tin tức</Link><p className="mt-9 text-sm font-bold uppercase tracking-[0.18em] text-cyan-400">{post.category}</p><h1 className="mt-4 text-3xl font-bold leading-tight md:text-5xl">{post.title}</h1><div className="mt-6 flex items-center gap-2 text-sm text-slate-300"><CalendarDays className="size-4" />{formatNewsDate(post.published_at)}</div></div></header>
-      <div className="container mx-auto max-w-4xl px-4 py-12 md:py-16">{post.cover_image_url && <img src={post.cover_image_url} alt={post.title} width="1200" height="675" className="mb-10 aspect-[16/9] w-full object-cover" />}<p className="border-l-4 border-cyan-500 pl-5 text-lg font-medium leading-relaxed text-slate-700 md:text-xl">{post.excerpt}</p><div className="mt-10 space-y-6 leading-8 text-slate-700">{parseNewsContent(post.content).map((block, index) => block.type === 'image' ? <img key={`${block.value}-${index}`} src={block.value} alt={`Hình ảnh trong bài viết: ${post.title}`} loading="lazy" className="w-full" /> : <p key={`${block.value.slice(0, 24)}-${index}`} className="whitespace-pre-line">{block.value}</p>)}</div></div>
+      <div className="container mx-auto max-w-4xl px-4 py-12 md:py-16">{post.cover_image_url && <img src={post.cover_image_url} alt={post.title} width="1200" height="675" className="mb-10 aspect-[16/9] w-full object-cover" />}<p className="border-l-4 border-cyan-500 pl-5 text-lg font-medium leading-relaxed text-slate-700 md:text-xl">{post.excerpt}</p><div className="mt-10"><NewsContent content={post.content} /></div></div>
     </article>
   </PublicLayout>;
 }

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { CalendarDays, ChevronLeft, Eye } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
-import { formatNewsDate, parseNewsContent } from '../lib/news-utils';
+import NewsContent from '../components/NewsContent';
+import { formatNewsDate } from '../lib/news-utils';
 import { ORGANIZATION_LOGO } from '../lib/site-seo';
 import { NewsPost, supabase } from '../lib/supabase';
 
@@ -56,14 +57,8 @@ export default function AdminNewsPreview() {
           <img src={post.cover_image_url} alt={post.title} width="1200" height="675" className="mb-10 aspect-[16/9] w-full object-cover" />
         )}
         <p className="border-l-4 border-cyan-500 pl-5 text-lg font-medium leading-relaxed text-slate-700 md:text-xl">{post.excerpt}</p>
-        <div className="mt-10 space-y-6 leading-8 text-slate-700">
-          {parseNewsContent(post.content).map((block, index) =>
-            block.type === 'image' ? (
-              <img key={`${block.value}-${index}`} src={block.value} alt={`Hình ảnh trong bài viết: ${post.title}`} loading="lazy" className="w-full" />
-            ) : (
-              <p key={`${block.value.slice(0, 24)}-${index}`} className="whitespace-pre-line">{block.value}</p>
-            )
-          )}
+        <div className="mt-10">
+          <NewsContent content={post.content} />
         </div>
       </div>
     </div>

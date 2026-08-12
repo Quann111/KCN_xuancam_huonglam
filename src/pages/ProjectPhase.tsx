@@ -1,11 +1,12 @@
 import { ArrowRight, CheckCircle2, MapPin } from 'lucide-react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import PublicLayout from '../components/PublicLayout';
 import SeoHead from '../components/SeoHead';
 import { absoluteUrl, getPhasePage, ORGANIZATION_NAME, SITE_NAME } from '../lib/site-seo';
 
 export default function ProjectPhase() {
-  const { phase } = useParams<{ phase: 'giai-doan-1' | 'giai-doan-2' }>();
+  const { pathname } = useLocation();
+  const phase = pathname.replace('/', '') as 'giai-doan-1' | 'giai-doan-2';
   const page = getPhasePage(phase);
 
   if (!page) return <Navigate to="/" replace />;

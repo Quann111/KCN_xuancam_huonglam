@@ -23,8 +23,8 @@ export default function AboutDpark() {
 
   return <PublicLayout>
     <SeoHead
-      title="Giới thiệu D-Park Group | Đại diện KCN Xuân Cẩm - Hương Lâm"
-      description="D-Park Group là đầu mối thông tin và tư vấn đầu tư cho Khu công nghiệp Xuân Cẩm - Hương Lâm giai đoạn 1 và giai đoạn 2."
+      title="D-Park Group | Tư vấn KCN Xuân Cẩm - Hương Lâm"
+      description="D-Park Group cung cấp thông tin và hỗ trợ doanh nghiệp tìm hiểu quy hoạch, hạ tầng, quỹ đất và cơ hội đầu tư tại KCN Xuân Cẩm - Hương Lâm."
       path="/gioi-thieu-d-park-group"
       image={ORGANIZATION_LOGO}
     >
