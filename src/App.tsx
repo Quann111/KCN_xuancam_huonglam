@@ -8,6 +8,7 @@ import AboutDpark from './pages/AboutDpark';
 const NewsList = lazy(() => import('./pages/NewsList'));
 const NewsDetail = lazy(() => import('./pages/NewsDetail'));
 const AdminNews = lazy(() => import('./pages/AdminNews'));
+const AdminNewsPreview = lazy(() => import('./pages/AdminNewsPreview'));
 const LoadingPage = () => <main className="min-h-screen bg-white" aria-busy="true" />;
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/tin-tuc" element={<NewsList />} />
           <Route path="/tin-tuc/:slug" element={<NewsDetail />} />
           <Route path="/admin/tin-tuc" element={<AdminNews />} />
+          <Route path="/admin/preview/:slug" element={<AdminNewsPreview />} />
         </Routes></Suspense>
       </BrowserRouter>
     </HelmetProvider>
