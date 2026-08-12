@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Bold, Eye, Heading2, Heading3, ImagePlus, Italic, Link as LinkIcon, List, LogOut, Pencil, Plus, Quote, Redo2, Trash2, Undo2, Underline as UnderlineIcon, Upload, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import NewsContent from '../components/NewsContent';
@@ -206,7 +206,7 @@ export default function AdminNews() {
     }, 0);
   }, [pushHistory]);
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
     const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     const mod = isMac ? e.metaKey : e.ctrlKey;
     if (mod && e.key === 'b') { e.preventDefault(); applyFormat('bold'); }

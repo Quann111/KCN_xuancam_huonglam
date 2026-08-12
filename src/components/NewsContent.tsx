@@ -88,7 +88,9 @@ export default function NewsContent({ content, className }: NewsContentProps) {
   return (
     <div className={className || 'space-y-2 leading-relaxed text-slate-700'}>
       {blocks.map((block, index) => (
-        <BlockRenderer key={index} block={block} />
+        <div key={index}>
+          <BlockRenderer block={block} />
+        </div>
       ))}
     </div>
   );
