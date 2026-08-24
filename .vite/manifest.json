@@ -1,0 +1,91 @@
+{
+  "_NewsContent-TvVq_4E4.js": {
+    "file": "assets/NewsContent-TvVq_4E4.js",
+    "name": "NewsContent",
+    "imports": [
+      "index.html"
+    ]
+  },
+  "_calendar-days-Bi4_h86X.js": {
+    "file": "assets/calendar-days-Bi4_h86X.js",
+    "name": "calendar-days",
+    "imports": [
+      "index.html"
+    ]
+  },
+  "_chevron-left-CX5caU9q.js": {
+    "file": "assets/chevron-left-CX5caU9q.js",
+    "name": "chevron-left",
+    "imports": [
+      "index.html"
+    ]
+  },
+  "_eye-D_KpHl8X.js": {
+    "file": "assets/eye-D_KpHl8X.js",
+    "name": "eye",
+    "imports": [
+      "index.html"
+    ]
+  },
+  "index.html": {
+    "file": "assets/index-Cj7C_0In.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "dynamicImports": [
+      "src/pages/NewsList.tsx",
+      "src/pages/NewsDetail.tsx",
+      "src/pages/AdminNews.tsx",
+      "src/pages/AdminNewsPreview.tsx"
+    ],
+    "css": [
+      "assets/index-PbA3ZLin.css"
+    ]
+  },
+  "src/pages/AdminNews.tsx": {
+    "file": "assets/AdminNews-NtcGo8UY.js",
+    "name": "AdminNews",
+    "src": "src/pages/AdminNews.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_NewsContent-TvVq_4E4.js",
+      "_eye-D_KpHl8X.js"
+    ]
+  },
+  "src/pages/AdminNewsPreview.tsx": {
+    "file": "assets/AdminNewsPreview-D2xVVaE6.js",
+    "name": "AdminNewsPreview",
+    "src": "src/pages/AdminNewsPreview.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_NewsContent-TvVq_4E4.js",
+      "_eye-D_KpHl8X.js",
+      "_chevron-left-CX5caU9q.js",
+      "_calendar-days-Bi4_h86X.js"
+    ]
+  },
+  "src/pages/NewsDetail.tsx": {
+    "file": "assets/NewsDetail-BTZKOs6H.js",
+    "name": "NewsDetail",
+    "src": "src/pages/NewsDetail.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_NewsContent-TvVq_4E4.js",
+      "_chevron-left-CX5caU9q.js",
+      "_calendar-days-Bi4_h86X.js"
+    ]
+  },
+  "src/pages/NewsList.tsx": {
+    "file": "assets/NewsList-b24vc-Qj.js",
+    "name": "NewsList",
+    "src": "src/pages/NewsList.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_calendar-days-Bi4_h86X.js"
+    ]
+  }
+}
