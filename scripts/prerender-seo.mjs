@@ -4,7 +4,7 @@ import { dirname, resolve } from 'node:path';
 const root = process.cwd();
 const dist = resolve(root, 'dist');
 const siteUrl = 'https://www.xuancamhuonglamip.vn';
-const defaultImage = `${siteUrl}/image/AIComplex_1776166732689.avif`;
+const defaultImage = `${siteUrl}/image/og-default.jpg`;
 const logoImage = `${siteUrl}/image/LOGO4.png`;
 
 async function loadEnvFile() {

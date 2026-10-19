@@ -13,7 +13,7 @@ interface SeoHeadProps {
   children?: ReactNode;
 }
 
-export default function SeoHead({ title, description, path, image = `${SITE_URL}/image/AIComplex_1776166732689.avif`, type = 'website', datePublished, dateModified, children }: SeoHeadProps) {
+export default function SeoHead({ title, description, path, image = `${SITE_URL}/image/og-default.jpg`, type = 'website', datePublished, dateModified, children }: SeoHeadProps) {
   const url = `${SITE_URL}${path}`;
   return <Helmet>
     <title>{title}</title>
