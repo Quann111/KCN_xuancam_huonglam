@@ -106,13 +106,32 @@ ${script}
 </html>`;
 }
 
-function newsHtml(post) {
+// Re-host each cover as a small same-domain 1200x630 JPG so social crawlers (Facebook, Zalo) can fetch it reliably.
+async function buildOgImage(post) {
+  if (!post.cover_image_url) return defaultImage;
+  try {
+    const response = await fetch(post.cover_image_url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const { default: sharp } = await import('sharp');
+    const buffer = await sharp(Buffer.from(await response.arrayBuffer()))
+      .resize(1200, 630, { fit: 'cover' })
+      .jpeg({ quality: 82, mozjpeg: true })
+      .toBuffer();
+    const output = resolve(dist, 'image', 'og', `${post.slug}.jpg`);
+    await mkdir(dirname(output), { recursive: true });
+    await writeFile(output, buffer);
+    return `${siteUrl}/image/og/${post.slug}.jpg`;
+  } catch (error) {
+    console.warn(`Pre-render: cannot build OG image for ${post.slug} (${error.message}). Using default image.`);
+    return defaultImage;
+  }
+}
+
+function newsHtml(post, image) {
   const path = `/tin-tuc/${post.slug}`;
   const canonical = `${siteUrl}${path}`;
   const title = post.seo_title || post.title;
   const description = post.seo_description || post.excerpt || '';
-  // Facebook does not render AVIF covers; fall back to the JPG default.
-  const image = post.cover_image_url && /\.(jpe?g|png)(\?|$)/i.test(post.cover_image_url) ? post.cover_image_url : defaultImage;
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',
@@ -178,7 +197,7 @@ let newsCount = 0;
 for (const post of posts) {
   const output = resolve(dist, 'tin-tuc', post.slug, 'index.html');
   await mkdir(dirname(output), { recursive: true });
-  await writeFile(output, newsHtml(post), 'utf8');
+  await writeFile(output, newsHtml(post, await buildOgImage(post)), 'utf8');
   newsCount++;
 }
 
