@@ -111,7 +111,8 @@ function newsHtml(post) {
   const canonical = `${siteUrl}${path}`;
   const title = post.seo_title || post.title;
   const description = post.seo_description || post.excerpt || '';
-  const image = post.cover_image_url || defaultImage;
+  // Facebook does not render AVIF covers; fall back to the JPG default.
+  const image = post.cover_image_url && /\.(jpe?g|png)(\?|$)/i.test(post.cover_image_url) ? post.cover_image_url : defaultImage;
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',
