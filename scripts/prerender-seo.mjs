@@ -85,6 +85,9 @@ function html(page) {
 <meta property="og:site_name" content="D-Park Group">
 <meta property="og:image" content="${defaultImage}">
 <meta property="og:image:secure_url" content="${defaultImage}">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="${esc(page.heading)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(page.title)}">
@@ -161,6 +164,9 @@ function newsHtml(post, image) {
 <meta property="og:site_name" content="D-Park Group">
 <meta property="og:image" content="${image}">
 <meta property="og:image:secure_url" content="${image}">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="${esc(title)}">
 <meta property="article:published_time" content="${post.published_at}">
 ${post.updated_at ? `<meta property="article:modified_time" content="${post.updated_at}">` : ''}
