@@ -33,7 +33,7 @@ async function getPublishedPosts() {
 }
 
 const escapeXml = (value) => String(value).replace(/[<>&'\"]/g, (char) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' })[char]);
-const toUrl = (path) => `${siteUrl}${path === '/' ? '/' : path}`;
+const toUrl = (path) => `${siteUrl}${path.endsWith('/') ? path : `${path}/`}`;
 const posts = await getPublishedPosts();
 const urls = [
   ...fixedPages.map((path) => ({ loc: toUrl(path), lastmod: null })),

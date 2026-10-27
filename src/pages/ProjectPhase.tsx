@@ -6,7 +6,7 @@ import { absoluteUrl, getPhasePage, ORGANIZATION_NAME, SITE_NAME } from '../lib/
 
 export default function ProjectPhase() {
   const { pathname } = useLocation();
-  const phase = pathname.replace('/', '') as 'giai-doan-1' | 'giai-doan-2';
+  const phase = pathname.replace(/^\/+|\/+$/g, '') as 'giai-doan-1' | 'giai-doan-2';
   const page = getPhasePage(phase);
 
   if (!page) return <Navigate to="/" replace />;

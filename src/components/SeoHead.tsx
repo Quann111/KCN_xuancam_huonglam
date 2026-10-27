@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { ORGANIZATION_LOGO, ORGANIZATION_NAME, SITE_NAME, SITE_URL } from '../lib/site-seo';
+import { ORGANIZATION_LOGO, ORGANIZATION_NAME, SITE_NAME, SITE_URL, withTrailingSlash } from '../lib/site-seo';
 
 interface SeoHeadProps {
   title: string;
@@ -14,7 +14,7 @@ interface SeoHeadProps {
 }
 
 export default function SeoHead({ title, description, path, image = `${SITE_URL}/image/og-default.jpg`, type = 'website', datePublished, dateModified, children }: SeoHeadProps) {
-  const url = `${SITE_URL}${path}`;
+  const url = `${SITE_URL}${withTrailingSlash(path)}`;
   return <Helmet>
     <title>{title}</title>
     <meta name="description" content={description} />

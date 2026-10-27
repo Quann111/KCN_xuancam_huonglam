@@ -3,6 +3,12 @@ export const SITE_NAME = 'Khu Công nghiệp Xuân Cẩm - Hương Lâm';
 export const ORGANIZATION_NAME = 'D-Park Group';
 export const ORGANIZATION_LOGO = `${SITE_URL}/image/LOGO4.png`;
 
+// GitHub Pages serves prerendered pages at "/path/" and 301-redirects "/path" there,
+// so canonical/og:url must end with "/" or Facebook/Zalo crawlers loop and drop the preview.
+export function withTrailingSlash(path: string) {
+  return path.endsWith('/') ? path : `${path}/`;
+}
+
 type PhasePage = {
   path: string;
   eyebrow: string;
@@ -58,5 +64,5 @@ export function getPhasePage(slug: string | undefined) {
 }
 
 export function absoluteUrl(path: string) {
-  return `${SITE_URL}${path}`;
+  return `${SITE_URL}${withTrailingSlash(path)}`;
 }

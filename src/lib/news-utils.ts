@@ -28,7 +28,7 @@ export function formatNewsDate(value: string | null) {
 }
 
 export function getAbsoluteNewsUrl(slug: string) {
-  return `${baseUrl}/tin-tuc/${slug}`;
+  return `${baseUrl}/tin-tuc/${slug}/`;
 }
 
 // --- Inline parsing ---

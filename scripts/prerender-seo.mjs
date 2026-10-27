@@ -62,8 +62,10 @@ const assetUrl = (file) => `/${file}`;
 const css = (entry.css ?? []).map((file) => `<link rel="stylesheet" href="${assetUrl(file)}">`).join('');
 const script = `<script type="module" src="${assetUrl(entry.file)}"></script>`;
 const esc = (value) => value.replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+// GitHub Pages 301-redirects "/path" to "/path/"; canonical/og:url must match the 200 URL or social crawlers loop.
+const pageUrl = (path) => `${siteUrl}${path.endsWith('/') ? path : `${path}/`}`;
 function html(page) {
-  const canonical = `${siteUrl}${page.path}`;
+  const canonical = pageUrl(page.path);
   const schema = page.schema || { '@context': 'https://schema.org', '@type': 'WebPage', name: page.title, description: page.description, url: canonical, isPartOf: { '@type': 'WebSite', name: 'Khu Công nghiệp Xuân Cẩm - Hương Lâm', url: siteUrl } };
   const extraSchemas = page.extraSchemas || [];
   const allSchemas = [JSON.stringify(schema), ...extraSchemas.map((s) => JSON.stringify(s))].map((s) => `<script type="application/ld+json">${s}</script>`).join('');
@@ -131,8 +133,7 @@ async function buildOgImage(post) {
 }
 
 function newsHtml(post, image) {
-  const path = `/tin-tuc/${post.slug}`;
-  const canonical = `${siteUrl}${path}`;
+  const canonical = pageUrl(`/tin-tuc/${post.slug}`);
   const title = post.seo_title || post.title;
   const description = post.seo_description || post.excerpt || '';
   const schema = {
@@ -143,9 +144,18 @@ function newsHtml(post, image) {
     mainEntityOfPage: canonical,
     datePublished: post.published_at,
     dateModified: post.updated_at || post.published_at,
-    image: post.cover_image_url ? [post.cover_image_url] : [defaultImage],
+    image: [image],
     author: { '@type': 'Organization', name: 'D-Park Group', url: `${siteUrl}/gioi-thieu-d-park-group` },
     publisher: { '@type': 'Organization', name: 'D-Park Group', logo: { '@type': 'ImageObject', url: logoImage } },
+  };
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: `${siteUrl}/` },
+      { '@type': 'ListItem', position: 2, name: 'Tin tức', item: pageUrl('/tin-tuc') },
+      { '@type': 'ListItem', position: 3, name: title, item: canonical },
+    ],
   };
   return `<!doctype html>
 <html lang="vi">
@@ -175,6 +185,7 @@ ${post.updated_at ? `<meta property="article:modified_time" content="${post.upda
 <meta name="twitter:description" content="${esc(description)}">
 <meta name="twitter:image" content="${image}">
 <script type="application/ld+json">${JSON.stringify(schema)}</script>
+<script type="application/ld+json">${JSON.stringify(breadcrumb)}</script>
 ${css}
 </head>
 <body>
@@ -182,6 +193,7 @@ ${css}
 <main>
 <h1>${esc(title)}</h1>
 <p>${esc(description)}</p>
+<nav><a href="/tin-tuc/">Tin tức &amp; Sự kiện</a> <a href="/">Khu Công nghiệp Xuân Cẩm - Hương Lâm</a></nav>
 </main>
 </div>
 ${script}

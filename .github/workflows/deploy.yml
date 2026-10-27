@@ -5,6 +5,9 @@ on:
     branches:
       - main
   workflow_dispatch:
+  # Rebuild periodically so newly published posts get prerendered OG pages (otherwise they return 404 to crawlers).
+  schedule:
+    - cron: '0 */2 * * *'
 
 permissions:
   contents: write
