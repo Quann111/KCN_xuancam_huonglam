@@ -45,17 +45,11 @@ export default function Home() {
 
   const stats = [
     { label: t.stats.scale, value: 102.85, suffix: ' ha', icon: Map, color: 'bg-blue-500' },
-    { label: t.stats.investment, value: 1467.5, suffix: ' tỷ VNĐ', icon: DollarSign, color: 'bg-pink-500' },
+    { label: t.stats.investment, value: 1467.5, suffix: t.units.billionVnd, icon: DollarSign, color: 'bg-pink-500' },
     { label: t.stats.deadline, value: 2075, suffix: '', icon: Clock, color: 'bg-slate-700' },
-    { label: t.stats.labor, value: 4500, suffix: ' người', icon: Users, color: 'bg-orange-500' },
+    { label: t.stats.labor, value: 4500, suffix: t.units.people, icon: Users, color: 'bg-orange-500' },
   ];
 
-  const languages = [
-    { code: 'vi' as Language, name: 'Tiếng Việt', flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/vi.svg', flagCode: 'vi', href: '#' },
-    { code: 'ja' as Language, name: 'Tiếng Nhật', flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/ja.svg', flagCode: 'jp', href: '#' },
-    { code: 'zh' as Language, name: 'Tiếng Trung', flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/zh-hant.svg', flagCode: 'cn', href: '#' },
-    { code: 'en' as Language, name: 'Tiếng Anh', flagUrl: 'https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/en.svg', flagCode: 'us', href: '#' },
-  ];
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -156,170 +150,11 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col font-sans text-slate-900 bg-white">
+    <div className="min-h-screen flex flex-col overflow-x-clip font-sans text-slate-900 bg-white">
       <SeoHead title="Khu Công nghiệp Xuân Cẩm - Hương Lâm, Bắc Ninh" description="Khu Công nghiệp Xuân Cẩm - Hương Lâm tại xã Xuân Cẩm, tỉnh Bắc Ninh, quy mô 224,02 ha. Cập nhật vị trí, quy hoạch, hạ tầng và thông tin đầu tư." path="/" image={ORGANIZATION_LOGO}>
         <script type="application/ld+json">{JSON.stringify({ '@context': 'https://schema.org', '@graph': [{ '@type': 'Organization', name: ORGANIZATION_NAME, url: SITE_URL, logo: ORGANIZATION_LOGO }, { '@type': 'WebSite', name: 'Khu Công nghiệp Xuân Cẩm - Hương Lâm', url: SITE_URL }, { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Trang chủ', item: SITE_URL }] }] })}</script>
       </SeoHead>
       <Header />
-      {/* Top Bar */}
-      <div className="hidden">
-        <div className="container mx-auto px-4 flex justify-end items-center gap-8 text-xs text-slate-500 font-medium">
-          <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-red-600" />
-            <span>{t.topBar.address}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Phone className="w-4 h-4 text-red-600" />
-            <span>(+84) 989 151 510</span>
-          </div>
-          <button 
-            onClick={() => scrollToSection('lien-he')}
-            className="border border-cyan-500 text-cyan-500 px-6 py-1.5 rounded-full hover:bg-cyan-500 hover:text-white transition-colors uppercase tracking-wider"
-          >
-            {t.nav.lienHe}
-          </button>
-        </div>
-      </div>
-
-      {/* Main Header */}
-      <header className="hidden">
-        <div className={`container mx-auto px-4 py-${isScrolled ? '2' : '4'} flex justify-center items-center transition-all duration-300 gap-12`}>
-
-          {/* Logo */}
-          <Link to="/" className="flex items-center shrink-0">
-            <img 
-              src={`${import.meta.env.BASE_URL}image/LOGO4.png`} 
-              alt="D-Park Group Logo" 
-              className={`h-${isScrolled ? '5 md:h-6 lg:h-8' : '6 md:h-8 lg:h-10'} w-auto object-contain transition-all duration-300 hover:scale-${isScrolled ? '102' : '105'}`} 
-            />
-          </Link>
-
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex lg:flex-nowrap items-center gap-4 xl:gap-6 pt-4">
-            {navItems.slice(0, -1).map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  scrollToSection(item.id);
-                  setActiveSection(item.id);
-                }}
-                className={`text-[11px] xl:text-[13px] font-bold tracking-wider transition-colors uppercase whitespace-nowrap ${activeSection === item.id ? 'text-cyan-500' : 'text-slate-600 hover:text-cyan-500'}`}
-              >
-                {t.nav[item.name as keyof typeof t.nav]}
-              </button>
-            ))}
-            <AnimatePresence>
-              {isScrolled && (
-                <motion.button
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  onClick={() => {
-                    scrollToSection('lien-he');
-                    setActiveSection('lien-he');
-                  }}
-                  className={`px-6 py-2 rounded-full text-[13px] font-bold transition-colors uppercase tracking-wider shadow-lg whitespace-nowrap ${activeSection === 'lien-he' ? 'bg-cyan-500 text-white' : 'bg-cyan-500 text-white hover:bg-cyan-600'}`}
-                  style={activeSection === 'lien-he' ? { boxShadow: '0 10px 15px -3px rgb(34 211 238 / 0.3)' } : {}}
-                >
-                  LIÊN HỆ
-                </motion.button>
-              )}
-            </AnimatePresence>
-
-            {/* Language Dropdown */}
-            <div className="relative lang-dropdown-container">
-              <button
-                onClick={() => setIsLangOpen(!isLangOpen)}
-                className="flex items-center gap-2 px-3 py-2 border border-slate-200 rounded-lg hover:border-cyan-500 hover:bg-cyan-50 transition-all"
-              >
-                <img 
-                  src={`https://songmainghiatrungip.vn/wp-content/plugins/sitepress-multilingual-cms/res/flags/${language === 'vi' ? 'vi' : language === 'ja' ? 'ja' : language === 'zh' ? 'zh-hant' : 'en'}.svg`}
-                  alt={language}
-                  className="w-5 h-4 object-cover rounded-sm"
-                  onError={(e) => {
-                    const flagMap: Record<string, string> = {
-                      'vi': 'vi',
-                      'ja': 'jp',
-                      'zh': 'zh-hant',
-                      'en': 'en'
-                    };
-                    const flag = flagMap[language] || 'en';
-                    e.currentTarget.src = `https://flagcdn.com/w40/${flag}.png`;
-                  }}
-                />
-                <span className="text-xs font-bold text-slate-600 uppercase">{language.toUpperCase()}</span>
-                <ChevronUp className={`w-3 h-3 text-slate-400 transition-transform ${isLangOpen ? 'rotate-180' : ''}`} />
-              </button>
-              
-              {isLangOpen && (
-                <div className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-xl border border-slate-100 py-2 min-w-[160px] z-50">
-                  {languages.map((lang) => (
-                    <a
-                      key={lang.code}
-                      href={lang.href}
-                      className={`flex items-center gap-3 px-4 py-3 hover:bg-cyan-50 transition-colors ${language === lang.code ? 'bg-cyan-50' : ''}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setLanguage(lang.code);
-                        setIsLangOpen(false);
-                      }}
-                    >
-                      <img 
-                        src={lang.flagUrl}
-                        alt={lang.name}
-                        className="w-5 h-4 object-cover rounded-sm"
-                        onError={(e) => {
-                          e.currentTarget.src = `https://flagcdn.com/w40/${lang.flagCode}.png`;
-                        }}
-                      />
-                      <span className="text-sm font-medium text-slate-700">{lang.name}</span>
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
-          </nav>
-
-          {/* Mobile Menu Toggle */}
-          <button 
-            className="lg:hidden p-2 text-slate-600"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X /> : <Menu />}
-          </button>
-        </div>
-
-        {/* Mobile Nav */}
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden bg-white border-t border-slate-100 overflow-hidden"
-            >
-              <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
-                {navItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => scrollToSection(item.id)}
-                    className="text-left text-lg font-semibold py-3 border-b border-slate-50 flex justify-between items-center text-slate-600"
-                  >
-                    {t.nav[item.name as keyof typeof t.nav]}
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                ))}
-                <button
-                  onClick={() => scrollToSection('lien-he')}
-                  className="mt-4 bg-cyan-500 text-white w-full py-4 rounded-2xl font-bold text-lg shadow-lg shadow-cyan-500/20 uppercase tracking-wider"
-                >
-                  {t.common.contact} {t.nav.lienHe}
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
 
       <main className="flex-grow">
         {/* Hero Section */}
@@ -373,12 +208,12 @@ export default function Home() {
 
       <section className="bg-white py-16 md:py-20">
         <div className="container mx-auto max-w-6xl px-4">
-          <p className="text-sm font-bold uppercase tracking-[0.18em] text-cyan-700">Thông tin dự án</p>
-          <h2 className="mt-3 text-3xl font-bold text-slate-900">Khu Công nghiệp Xuân Cẩm - Hương Lâm</h2>
-          <p className="mt-4 max-w-3xl leading-8 text-slate-600">D-Park Group là đầu mối thông tin cho hai giai đoạn của dự án. Tìm hiểu từng giai đoạn để nhận nội dung quy hoạch, hạ tầng và tư vấn phù hợp.</p>
+          <p className="text-sm font-bold uppercase tracking-[0.18em] text-cyan-700">{t.home.projectLabel}</p>
+          <h2 className="mt-3 text-3xl font-bold text-slate-900">{t.home.projectTitle}</h2>
+          <p className="mt-4 max-w-3xl leading-8 text-slate-600">{t.home.projectDesc}</p>
           <div className="mt-8 grid gap-5 md:grid-cols-2">
-            <Link to="/giai-doan-1" className="border border-slate-200 p-6 transition-colors hover:border-cyan-500"><h3 className="text-xl font-bold text-slate-900">Giai đoạn 1</h3><p className="mt-3 leading-7 text-slate-600">Tìm hiểu hạ tầng giai đoạn 1, quy hoạch và định hướng thu hút đầu tư.</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-cyan-700">Xem thông tin quy hoạch <ArrowRight className="size-4" /></span></Link>
-            <Link to="/giai-doan-2" className="border border-slate-200 p-6 transition-colors hover:border-cyan-500"><h3 className="text-xl font-bold text-slate-900">Giai đoạn 2</h3><p className="mt-3 leading-7 text-slate-600">Xem thông tin đầu tư giai đoạn 2 và định hướng phát triển mở rộng.</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-cyan-700">Thông tin đầu tư giai đoạn 2 <ArrowRight className="size-4" /></span></Link>
+            <Link to="/giai-doan-1" className="border border-slate-200 p-6 transition-colors hover:border-cyan-500"><h3 className="text-xl font-bold text-slate-900">{t.phase.phase1}</h3><p className="mt-3 leading-7 text-slate-600">{t.home.phase1Desc}</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-cyan-700">{t.home.phase1Cta} <ArrowRight className="size-4" /></span></Link>
+            <Link to="/giai-doan-2" className="border border-slate-200 p-6 transition-colors hover:border-cyan-500"><h3 className="text-xl font-bold text-slate-900">{t.phase.phase2}</h3><p className="mt-3 leading-7 text-slate-600">{t.home.phase2Desc}</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-cyan-700">{t.home.phase2Cta} <ArrowRight className="size-4" /></span></Link>
           </div>
         </div>
       </section>
@@ -503,7 +338,7 @@ export default function Home() {
               >
                 <span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">{t.location.label}</span>
                 <h2 className="text-4xl md:text-6xl font-bold text-slate-900 leading-tight tracking-tighter">
-                  {t.location.title1} <br />vùng kinh tế <span className="text-cyan-500">{t.location.titleHighlight}</span>
+                  {t.location.title1} <br />{t.location.title2} <span className="text-cyan-500">{t.location.titleHighlight}</span>
                 </h2>
               </motion.div>
               <motion.div
@@ -632,7 +467,7 @@ export default function Home() {
             >
               <div className="space-y-4">
                 <span className="text-cyan-400 font-black uppercase tracking-[0.2em] text-sm">{t.scale.label}</span>
-                <h2 className="text-4xl md:text-6xl font-bold leading-tight tracking-tighter">{t.scale.title1} <br /> cùng <span className="text-cyan-400">{t.scale.title2}</span></h2>
+                <h2 className="text-4xl md:text-6xl font-bold leading-tight tracking-tighter">{t.scale.title1} <br /> <span className="text-cyan-400">{t.scale.title2}</span></h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 {[
@@ -736,7 +571,7 @@ export default function Home() {
                   <span className="text-6xl font-black text-cyan-600"><AnimatedNumber end={160} prefix="$" duration={1500} delay={0.3} /></span>
                   <span className="text-slate-400 font-bold">{t.cost.perMonth}</span>
                 </div>
-                <p className="mt-6 text-slate-500 leading-relaxed">Áp dụng cho Vùng 3 theo quy định của Chính phủ Việt Nam, giúp tối ưu chi phí nhân công cho doanh nghiệp.</p>
+                <p className="mt-6 text-slate-500 leading-relaxed">{t.home.wageNote}</p>
               </motion.div>
               <motion.div 
                 initial={{ opacity: 0, x: 20 }}
@@ -747,7 +582,7 @@ export default function Home() {
               >
                 <h4 className="text-xl font-bold text-slate-900 mb-8">{t.cost.totalInvestment}</h4>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-black text-slate-900"><AnimatedNumber end={1467.5} suffix=" tỷ VNĐ" duration={1500} decimals={1} delay={0.4} /></span>
+                  <span className="text-4xl font-black text-slate-900"><AnimatedNumber end={1467.5} suffix={t.units.billionVnd} duration={1500} decimals={1} delay={0.4} /></span>
                 </div>
                 <p className="mt-6 text-slate-500 leading-relaxed">{t.cost.investmentDesc}</p>
               </motion.div>
@@ -987,64 +822,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TIN TỨC Section */}
-      <section id="tin-tuc-legacy" className="hidden">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-end mb-16">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="space-y-4"
-            >
-              <span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">{t.news.label}</span>
-              <h2 className="text-4xl md:text-6xl font-bold tracking-tighter">{t.news.title}</h2>
-            </motion.div>
-            <button className="hidden md:flex items-center gap-2 text-cyan-600 font-bold hover:gap-4 transition-all">
-              {t.common.viewAll} <ArrowRight className="w-5 h-5" />
-            </button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { title: 'Khởi công xây dựng hạ tầng kỹ thuật Giai đoạn 1', date: '15/03/2024', image: `${import.meta.env.BASE_URL}image/AIComplex_1776166944793.avif`, category: t.news.categories.event },
-              { title: 'D-PARK GROUP ký kết hợp tác chiến lược cùng Nippon Koei', date: '10/02/2024', image: `${import.meta.env.BASE_URL}image/AIComplex_1777917995188.avif`, category: t.news.categories.cooperation },
-              { title: 'Bắc Giang dẫn đầu cả nước về tốc độ tăng trưởng GRDP', date: '05/01/2024', image: `${import.meta.env.BASE_URL}image/AIComplex_1777917938644.avif`, category: t.news.categories.market },
-            ].map((news, index) => (
-              <motion.div
-                key={news.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="group cursor-pointer"
-              >
-                <div className="relative h-64 rounded-[32px] overflow-hidden mb-6">
-                  <img src={news.image} alt={news.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-slate-900">
-                    {news.category}
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <div className="text-slate-400 text-xs font-bold uppercase tracking-widest">{news.date}</div>
-                  <h4 className="text-xl font-bold text-slate-900 group-hover:text-cyan-600 transition-colors leading-tight">
-                    {news.title}
-                  </h4>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* TUYỂN DỤNG Section */}
       <section id="tin-tuc" className="py-24 bg-white">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-14">
-            <div className="space-y-4"><span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">Tin tức & Sự kiện</span><h2 className="text-4xl md:text-6xl font-bold tracking-tighter">Cập nhật mới nhất</h2></div>
-            <Link to="/tin-tuc" onClick={() => window.scrollTo({ top: 0 })} className="inline-flex items-center gap-2 text-cyan-600 font-bold hover:gap-4 transition-all">Xem tất cả <ArrowRight className="w-5 h-5" /></Link>
+            <div className="space-y-4"><span className="text-cyan-600 font-black uppercase tracking-[0.2em] text-sm">{t.news.label}</span><h2 className="text-4xl md:text-6xl font-bold tracking-tighter">{t.news.title}</h2></div>
+            <Link to="/tin-tuc" onClick={() => window.scrollTo({ top: 0 })} className="inline-flex items-center gap-2 text-cyan-600 font-bold hover:gap-4 transition-all">{t.common.viewAll} <ArrowRight className="w-5 h-5" /></Link>
           </div>
-          {latestPosts.length === 0 ? <p className="text-slate-500">Chưa có bài viết nào được xuất bản.</p> : <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {latestPosts.map((news) => <article key={news.id} className="group"><Link to={`/tin-tuc/${news.slug}/`} target="_blank" rel="noopener noreferrer" className="block"><div className="relative h-64 rounded-lg overflow-hidden mb-6 bg-slate-100">{news.cover_image_url ? <img src={news.cover_image_url} alt={news.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" /> : <div className="h-full flex items-center justify-center text-slate-400">Tin tức</div>}<div className="absolute top-4 left-4 bg-white/90 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-slate-900">{news.category}</div></div><div className="space-y-3"><div className="text-slate-400 text-xs font-bold uppercase tracking-widest">{formatNewsDate(news.published_at)}</div><h3 className="text-xl font-bold text-slate-900 group-hover:text-cyan-600 transition-colors leading-tight">{news.title}</h3><p className="text-sm leading-relaxed text-slate-600">{news.excerpt}</p></div></Link></article>)}
+          {latestPosts.length === 0 ? <p className="text-slate-500">{t.newsPage.empty}</p> : <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {latestPosts.map((news) => <article key={news.id} className="group"><Link to={`/tin-tuc/${news.slug}/`} target="_blank" rel="noopener noreferrer" className="block"><div className="relative h-64 rounded-lg overflow-hidden mb-6 bg-slate-100">{news.cover_image_url ? <img src={news.cover_image_url} alt={news.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" /> : <div className="h-full flex items-center justify-center text-slate-400">{t.newsPage.placeholder}</div>}<div className="absolute top-4 left-4 bg-white/90 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-slate-900">{news.category}</div></div><div className="space-y-3"><div className="text-slate-400 text-xs font-bold uppercase tracking-widest">{formatNewsDate(news.published_at, language)}</div><h3 className="text-xl font-bold text-slate-900 group-hover:text-cyan-600 transition-colors leading-tight">{news.title}</h3><p className="text-sm leading-relaxed text-slate-600">{news.excerpt}</p></div></Link></article>)}
           </div>}
         </div>
       </section>
@@ -1079,11 +866,7 @@ export default function Home() {
                 </button>
               </motion.div>
               <div className="lg:w-1/2 grid grid-cols-1 gap-4 w-full">
-                {[
-                  { pos: 'Kỹ sư hạ tầng kỹ thuật', loc: 'Bắc Giang' },
-                  { pos: 'Chuyên viên kinh doanh BĐS KCN', loc: 'Hà Nội / Bắc Giang' },
-                  { pos: 'Chuyên viên pháp lý dự án', loc: 'Bắc Giang' },
-                ].map((job, index) => (
+                {t.home.jobs.map((job, index) => (
                   <motion.div 
                     key={job.pos}
                     initial={{ opacity: 0, x: 50 }}
@@ -1118,7 +901,7 @@ export default function Home() {
               <div className="lg:w-1/2 space-y-12">
                 <div className="space-y-4">
                   <span className="text-cyan-400 font-black uppercase tracking-[0.2em] text-sm">{t.contact.label}</span>
-                  <h2 className="text-4xl md:text-6xl font-bold text-white leading-tight tracking-tighter">{t.contact.title1} <br /> cùng <span className="text-cyan-400">{t.contact.title2}</span></h2>
+                  <h2 className="text-4xl md:text-6xl font-bold text-white leading-tight tracking-tighter">{t.contact.title1} <br /> <span className="text-cyan-400">{t.contact.title2}</span></h2>
                 </div>
                 <div className="space-y-8">
                   <div className="flex items-center gap-6 group">

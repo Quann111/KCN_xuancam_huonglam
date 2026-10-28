@@ -1,3 +1,4 @@
+import { useLanguage } from '../contexts/LanguageContext';
 import { InlineSegment, ContentBlock, parseNewsContent, parseInline } from '../lib/news-utils';
 
 function InlineRenderer({ segments }: { segments: InlineSegment[] }) {
@@ -23,6 +24,7 @@ function InlineRenderer({ segments }: { segments: InlineSegment[] }) {
 }
 
 function BlockRenderer({ block }: { block: ContentBlock }) {
+  const { t } = useLanguage();
   switch (block.type) {
     case 'heading2':
       return <h2 className="text-2xl font-bold mt-8 mb-4 text-slate-900"><InlineRenderer segments={block.content} /></h2>;
@@ -55,7 +57,7 @@ function BlockRenderer({ block }: { block: ContentBlock }) {
         <figure className="my-6">
           <img
             src={block.url}
-            alt={block.alt || 'Hình ảnh trong bài viết'}
+            alt={block.alt || t.newsPage.imageAlt}
             loading="lazy"
             className="w-full rounded-lg"
           />
@@ -79,10 +81,11 @@ export interface NewsContentProps {
 }
 
 export default function NewsContent({ content, className }: NewsContentProps) {
+  const { t } = useLanguage();
   const blocks = parseNewsContent(content);
 
   if (blocks.length === 0) {
-    return <p className="text-slate-400 italic">Nội dung chưa được cập nhật.</p>;
+    return <p className="text-slate-400 italic">{t.newsPage.noContent}</p>;
   }
 
   return (

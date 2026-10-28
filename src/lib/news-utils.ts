@@ -1,3 +1,5 @@
+import { Language, languageOptions, translations } from '../translations';
+
 const baseUrl = 'https://www.xuancamhuonglamip.vn';
 
 export function generateSlug(value: string) {
@@ -15,10 +17,11 @@ export function normalizeSlug(value: string) {
   return generateSlug(value);
 }
 
-export function formatNewsDate(value: string | null) {
-  if (!value) return 'Chưa xuất bản';
+export function formatNewsDate(value: string | null, language: Language = 'vi') {
+  if (!value) return translations[language].newsPage.unpublished;
 
-  return new Intl.DateTimeFormat('vi-VN', {
+  const locale = languageOptions.find((item) => item.code === language)?.locale ?? 'vi-VN';
+  return new Intl.DateTimeFormat(locale, {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',

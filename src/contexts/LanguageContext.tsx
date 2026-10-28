@@ -11,17 +11,15 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 const LANGUAGE_STORAGE_KEY = 'd-park-language';
 
-const langToHtml: Record<Language, string> = { vi: 'vi', en: 'en', ja: 'ja', zh: 'zh' };
-
 function applyLangAttr(lang: Language) {
-  document.documentElement.setAttribute('lang', langToHtml[lang] || 'vi');
+  document.documentElement.setAttribute('lang', lang);
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-      if (saved && (saved === 'vi' || saved === 'en' || saved === 'ja' || saved === 'zh')) {
+      if (saved && saved in translations) {
         return saved as Language;
       }
     }
@@ -32,14 +30,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     setLanguageState(lang);
     if (typeof window !== 'undefined') {
       localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
-      document.documentElement.setAttribute('lang', lang === 'vi' ? 'vi' : lang === 'ja' ? 'ja' : lang === 'zh' ? 'zh' : 'en');
+      applyLangAttr(lang);
     }
   };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
-      document.documentElement.setAttribute('lang', language === 'vi' ? 'vi' : language === 'ja' ? 'ja' : language === 'zh' ? 'zh' : 'en');
+      applyLangAttr(language);
     }
   }, [language]);
 
