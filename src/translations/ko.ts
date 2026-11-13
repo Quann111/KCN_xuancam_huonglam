@@ -8,7 +8,7 @@ export const ko = {
     readMore: '자세히 보기', close: '닫기',
   },
   topBar: {
-    address: '박장시 호앙반뚜동 레로이로 291골목 34번지',
+    address: '박닌시 박장동 레로이로 291골목 34번지',
   },
   nav: {
     viTri: '입지',
@@ -23,7 +23,7 @@ export const ko = {
     lienHe: '문의하기',
   },
   hero: {
-    badge: '박닌성 핵심 프로젝트',
+    badge: '박닌시 핵심 프로젝트',
     titlePart1: '쑤언깜',
     titlePart2: '– 흐엉람 산업단지',
     description: '연결의 중심 – 번영을 창조합니다. 동시적이고 현대적인 인프라로 첨단기술 투자를 유치합니다.',
@@ -50,7 +50,7 @@ export const ko = {
     title1: '',
     title2: '',
     titleHighlight: '핵심 경제권의 연결 중심',
-    description1: '본 프로젝트는 박닌성 쑤언깜사에 위치하며, 하노이 북동부 산업 삼각지대(타이응우옌 – 박닌 – 박장)의 중심에 있습니다. 이전 행정구역상 박장성 히엡호아현에 속했습니다.',
+    description1: '본 프로젝트는 박닌시 쑤언깜사에 위치하며, 하노이 북동부 산업 삼각지대(타이응우옌 – 박닌 – 박장)의 중심에 있습니다. 이전 행정구역상 박장성 히엡호아현에 속했습니다.',
     distanceToHanoi: '하노이 시내까지',
     distanceToBacNinh: '박닌시까지',
     distanceToBacGiang: '박장시까지',

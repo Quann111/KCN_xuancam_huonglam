@@ -28,18 +28,30 @@ function unmask(text: string, tokens: string[]) {
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const stripAccents = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[đĐ]/g, 'd').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+
+// When throttled, Google sometimes answers 200 with the source echoed back without diacritics.
+function looksUntranslated(source: string, output: string) {
+  const src = stripAccents(source);
+  if (src.split(' ').length < 4) return false;
+  return stripAccents(output) === src;
+}
+
 async function translateParagraph(paragraph: string, language: TranslationLanguage): Promise<string> {
   if (!paragraph.trim()) return paragraph;
   const { value, tokens } = mask(paragraph, language);
   const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=vi&tl=${language}&dt=t&q=${encodeURIComponent(value)}`;
-  let response = await fetch(url);
-  for (let attempt = 0; attempt < 5 && (response.status === 429 || response.status >= 500); attempt++) {
-    await sleep(1000 * 2 ** attempt);
-    response = await fetch(url);
+  for (let attempt = 0; attempt < 6; attempt++) {
+    if (attempt) await sleep(1000 * 2 ** attempt);
+    const response = await fetch(url);
+    if (response.status === 429 || response.status >= 500) continue;
+    if (!response.ok) throw new Error(`Translation request failed: ${response.status}`);
+    const data = await response.json() as Array<Array<[string]>>;
+    const text = (data[0] ?? []).map((part) => part[0]).join('');
+    if (looksUntranslated(value, text)) continue;
+    return unmask(text, tokens);
   }
-  if (!response.ok) throw new Error(`Translation request failed: ${response.status}`);
-  const data = await response.json() as Array<Array<[string]>>;
-  return unmask((data[0] ?? []).map((part) => part[0]).join(''), tokens);
+  throw new Error('Translation failed: service returned untranslated text');
 }
 
 export async function translateText(text: string, language: TranslationLanguage): Promise<string> {

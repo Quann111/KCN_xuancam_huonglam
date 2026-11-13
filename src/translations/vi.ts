@@ -8,7 +8,7 @@ export const vi = {
     readMore: 'Xem chi tiết', close: 'Đóng',
   },
   topBar: {
-    address: 'Số 34, ngõ 291, đường Lê Lợi, P. Hoàng Văn Thụ, TP. Bắc Giang',
+    address: 'Số 34, ngõ 291, đường Lê Lợi, phường Bắc Giang, thành phố Bắc Ninh',
   },
   nav: {
     viTri: 'VỊ TRÍ',
@@ -50,7 +50,7 @@ export const vi = {
     title1: 'Tâm điểm kết nối',
     title2: 'vùng kinh tế',
     titleHighlight: 'trọng điểm',
-    description1: 'Dự án tọa lạc tại xã Xuân Cẩm, tỉnh Bắc Ninh, trung tâm tam giác công nghiệp Đông Bắc Hà Nội: Thái Nguyên – Bắc Ninh – Bắc Giang. Địa giới hành chính trước đây thuộc huyện Hiệp Hòa, tỉnh Bắc Giang.',
+    description1: 'Dự án tọa lạc tại xã Xuân Cẩm, thành phố Bắc Ninh, trung tâm tam giác công nghiệp Đông Bắc Hà Nội: Thái Nguyên – Bắc Ninh – Bắc Giang. Địa giới hành chính trước đây thuộc huyện Hiệp Hòa, tỉnh Bắc Giang.',
     distanceToHanoi: 'Đến Trung tâm Hà Nội',
     distanceToBacNinh: 'Đến TP. Bắc Ninh',
     distanceToBacGiang: 'Đến TP. Bắc Giang',
