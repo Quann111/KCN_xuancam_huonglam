@@ -1,4 +1,5 @@
 import { Language, languageOptions, translations } from '../translations';
+import { JobPost, NewsPost } from './supabase';
 
 const baseUrl = 'https://www.xuancamhuonglamip.vn';
 
@@ -32,6 +33,17 @@ export function formatNewsDate(value: string | null, language: Language = 'vi') 
 
 export function getAbsoluteNewsUrl(slug: string) {
   return `${baseUrl}/tin-tuc/${slug}/`;
+}
+
+export function localizePost(post: NewsPost, language: Language) {
+  const translated = language === 'vi' ? undefined : post.translations?.[language];
+  return translated ? { ...post, ...translated } : post;
+}
+
+export function localizeJob(job: JobPost, language: Language): JobPost {
+  const translated = language === 'vi' ? undefined : job.translations?.[language];
+  if (!translated) return job;
+  return { ...job, title: translated.title || job.title, location: translated.excerpt || job.location, description: translated.content || job.description };
 }
 
 // --- Inline parsing ---

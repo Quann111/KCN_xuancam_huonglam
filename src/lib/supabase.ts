@@ -25,4 +25,18 @@ export interface NewsPost {
   seo_description: string | null;
   created_at: string;
   updated_at: string;
+  translations?: Record<string, import('./translate').LocalizedFields>;
+}
+
+export interface JobPost {
+  id: string;
+  title: string;
+  location: string;
+  employment_type: string;
+  description: string;
+  sort_order: number;
+  status: NewsStatus;
+  translations?: Record<string, import('./translate').LocalizedFields>;
+  created_at: string;
+  updated_at: string;
 }

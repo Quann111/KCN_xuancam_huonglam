@@ -2,7 +2,9 @@ import { ChangeEvent, FormEvent, KeyboardEvent, useCallback, useEffect, useMemo,
 import { Bold, Eye, Heading2, Heading3, ImagePlus, Italic, Link as LinkIcon, List, LogOut, Pencil, Plus, Quote, Redo2, Trash2, Undo2, Underline as UnderlineIcon, Upload, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import NewsContent from '../components/NewsContent';
+import AdminJobs from '../components/AdminJobs';
 import { formatNewsDate, generateSlug, normalizeSlug } from '../lib/news-utils';
+import { translateFields, TranslationLanguage, LocalizedFields } from '../lib/translate';
 import { NewsPost, NewsStatus, supabase, supabaseConfigMessage } from '../lib/supabase';
 
 type StatusFilter = 'all' | NewsStatus;
@@ -10,9 +12,12 @@ type StatusFilter = 'all' | NewsStatus;
 type FormState = {
   title: string; slug: string; excerpt: string; content: string; category: string; cover_image_url: string;
   seo_title: string; seo_description: string; status: NewsStatus; published_at: string;
+  translations: Record<TranslationLanguage, LocalizedFields>;
 };
 
-const emptyForm: FormState = { title: '', slug: '', excerpt: '', content: '', category: 'Sự kiện', cover_image_url: '', seo_title: '', seo_description: '', status: 'draft', published_at: '' };
+const translationLanguages: TranslationLanguage[] = ['en', 'ko', 'ja', 'zh'];
+const emptyLocalizedFields = (): LocalizedFields => ({ title: '', excerpt: '', content: '', seo_title: '', seo_description: '' });
+const emptyForm: FormState = { title: '', slug: '', excerpt: '', content: '', category: 'Sự kiện', cover_image_url: '', seo_title: '', seo_description: '', status: 'draft', published_at: '', translations: { en: emptyLocalizedFields(), ko: emptyLocalizedFields(), ja: emptyLocalizedFields(), zh: emptyLocalizedFields() } };
 
 export default function AdminNews() {
   const [email, setEmail] = useState('');
@@ -29,10 +34,27 @@ export default function AdminNews() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [dateFilter, setDateFilter] = useState('');
   const [editorTab, setEditorTab] = useState<'write' | 'preview'>('write');
+  const [languageTab, setLanguageTab] = useState<TranslationLanguage | 'vi'>('vi');
   const [undoStack, setUndoStack] = useState<string[]>([]);
   const [redoStack, setRedoStack] = useState<string[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const client = supabase;
+  const localizedFields = languageTab === 'vi' ? form : form.translations[languageTab];
+  const setLocalizedField = (field: keyof Omit<LocalizedFields, 'manual'>, value: string) => {
+    if (languageTab === 'vi') { setField(field as keyof FormState, value); return; }
+    setForm((current) => ({ ...current, translations: { ...current.translations, [languageTab]: { ...current.translations[languageTab], [field]: value, manual: true } } }));
+  };
+
+  const translateAgain = async (language: TranslationLanguage) => {
+    const baseFields = { title: form.title, excerpt: form.excerpt, content: form.content, seo_title: form.seo_title, seo_description: form.seo_description };
+    try {
+      const translated = await translateFields(baseFields, language);
+      setForm((current) => ({ ...current, translations: { ...current.translations, [language]: { ...translated, manual: false } } }));
+      setMessage(`Đã dịch lại nội dung tiếng Việt sang ${language.toUpperCase()}.`);
+    } catch (translationError) {
+      setError(`Không thể dịch lại ${language.toUpperCase()}. Vui lòng thử lại.`);
+    }
+  };
 
   const formTitle = useMemo(() => editing ? 'Chỉnh sửa bài viết' : 'Tạo bài viết mới', [editing]);
 
@@ -217,7 +239,7 @@ export default function AdminNews() {
     else if (mod && e.shiftKey && e.key === 'z') { e.preventDefault(); redo(); }
   }, [applyFormat, undo, redo]);
 
-  const resetForm = () => { setForm(emptyForm); setEditing(null); setMessage(''); setError(''); setTitleWarning(''); setUndoStack([]); setRedoStack([]); setEditorTab('write'); };
+  const resetForm = () => { setForm(emptyForm); setEditing(null); setLanguageTab('vi'); setMessage(''); setError(''); setTitleWarning(''); setUndoStack([]); setRedoStack([]); setEditorTab('write'); };
 
   const checkDuplicateTitle = async (title: string) => {
     if (!title.trim()) { setTitleWarning(''); return; }
@@ -279,9 +301,18 @@ export default function AdminNews() {
     const slug = normalizeSlug(form.slug || form.title);
     if (!form.title.trim() || !slug || !form.excerpt.trim() || !form.content.trim()) { setError('Vui lòng nhập tiêu đề, slug, mô tả ngắn và nội dung bài viết.'); return; }
     setSaving(true);
+    const baseFields = { title: form.title.trim(), excerpt: form.excerpt.trim(), content: form.content.trim(), seo_title: form.seo_title.trim(), seo_description: form.seo_description.trim() };
+    const translations: Record<string, LocalizedFields> = { ...(editing?.translations ?? {}), ...form.translations };
+    const translationErrors: string[] = [];
+    for (const lang of translationLanguages) {
+      if (!translations[lang]?.manual) {
+        try { translations[lang] = await translateFields(baseFields, lang); } catch (translationError) { translationErrors.push(lang); }
+      }
+    }
     const payload = {
       title: form.title.trim(), slug, excerpt: form.excerpt.trim(), content: form.content.trim(), category: form.category.trim() || 'Tin tức',
       cover_image_url: form.cover_image_url.trim() || null, seo_title: form.seo_title.trim() || null, seo_description: form.seo_description.trim() || null,
+      translations,
       status: form.status, published_at: form.status === 'published' ? (form.published_at ? new Date(form.published_at).toISOString() : (editing?.published_at ?? new Date().toISOString())) : null,
     };
     const request = editing ? client.from('news_posts').update(payload).eq('id', editing.id) : client.from('news_posts').insert(payload);
@@ -289,14 +320,15 @@ export default function AdminNews() {
     setSaving(false);
     if (saveError) { setError(saveError.code === '23505' ? 'Slug SEO đã được dùng cho một bài viết khác.' : `Không thể lưu bài viết: ${saveError.message}`); return; }
     resetForm();
-    setMessage(editing ? 'Đã cập nhật bài viết.' : 'Đã tạo bài viết.');
+    setMessage(`${editing ? 'Đã cập nhật bài viết.' : 'Đã tạo bài viết.'}${translationErrors.length ? ` Không dịch được: ${translationErrors.join(', ')}; sẽ thử lại lần lưu sau.` : ''}`);
     await loadPosts();
   };
 
   const editPost = (post: NewsPost) => {
     setEditing(post);
-    setForm({ title: post.title, slug: post.slug, excerpt: post.excerpt, content: post.content, category: post.category, cover_image_url: post.cover_image_url || '', seo_title: post.seo_title || '', seo_description: post.seo_description || '', status: post.status, published_at: post.published_at ? post.published_at.slice(0, 16) : '' });
+    setForm({ title: post.title, slug: post.slug, excerpt: post.excerpt, content: post.content, category: post.category, cover_image_url: post.cover_image_url || '', seo_title: post.seo_title || '', seo_description: post.seo_description || '', status: post.status, published_at: post.published_at ? post.published_at.slice(0, 16) : '', translations: { en: { ...emptyLocalizedFields(), ...(post.translations?.en ?? {}) }, ko: { ...emptyLocalizedFields(), ...(post.translations?.ko ?? {}) }, ja: { ...emptyLocalizedFields(), ...(post.translations?.ja ?? {}) }, zh: { ...emptyLocalizedFields(), ...(post.translations?.zh ?? {}) } } });
     setError(''); setMessage('');
+    setLanguageTab('vi');
     setUndoStack([]); setRedoStack([]); setEditorTab('write');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -320,7 +352,7 @@ export default function AdminNews() {
 
   return <main className="min-h-screen bg-slate-100 text-slate-900"><header className="bg-slate-950 text-white"><div className="max-w-7xl mx-auto px-4 py-5 flex items-center justify-between"><div><h1 className="text-xl font-bold">Quản trị tin tức</h1><p className="text-sm text-slate-300 mt-1">KCN Xuân Cẩm - Hương Lâm</p></div><button onClick={() => void client.auth.signOut()} className="inline-flex items-center gap-2 text-sm font-bold text-slate-200 hover:text-white"><LogOut className="w-4 h-4" />Đăng xuất</button></div></header>
     <div className="max-w-7xl mx-auto p-4 md:p-8 grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_420px] gap-8"><section className="order-2 xl:order-1"><div className="flex items-center justify-between mb-5"><h2 className="text-xl font-bold">Danh sách bài viết</h2><span className="text-sm text-slate-500">{filteredPosts.length} / {posts.length} bài</span></div>{message && <p className="mb-4 text-sm text-emerald-700">{message}</p>}{error && <p className="mb-4 text-sm text-red-600">{error}</p>}<div className="flex flex-wrap gap-3 mb-4"><select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as StatusFilter)} className="border border-slate-300 rounded-md px-3 py-2 text-sm bg-white"><option value="all">Tất cả trạng thái</option><option value="published">Đã xuất bản</option><option value="draft">Bản nháp</option></select><input type="date" value={dateFilter} onChange={(event) => setDateFilter(event.target.value)} className="border border-slate-300 rounded-md px-3 py-2 text-sm bg-white" title="Lọc theo ngày" />{dateFilter && <button onClick={() => setDateFilter('')} className="text-sm text-slate-500 hover:text-slate-700 font-semibold flex items-center gap-1"><X className="w-3.5 h-3.5" />Xoá ngày</button>}</div><div className="bg-white border border-slate-200 rounded-lg overflow-x-auto"><table className="w-full text-sm min-w-[720px]"><thead className="bg-slate-50 text-left text-slate-500"><tr><th className="p-4">Bài viết</th><th className="p-4">Trạng thái</th><th className="p-4">Ngày đăng</th><th className="p-4 text-right">Thao tác</th></tr></thead><tbody>{filteredPosts.map((post) => <tr key={post.id} className="border-t border-slate-100"><td className="p-4"><p className="font-bold">{post.title}</p><p className="mt-1 text-xs text-slate-500">/tin-tuc/{post.slug}</p></td><td className="p-4"><span className={`inline-flex px-2 py-1 rounded text-xs font-bold ${post.status === 'published' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{post.status === 'published' ? 'Đã xuất bản' : 'Bản nháp'}</span></td><td className="p-4 text-slate-600">{formatNewsDate(post.published_at)}</td><td className="p-4"><div className="flex justify-end gap-2"><Link to={`/admin/preview/${post.slug}`} target="_blank" title="Xem trước" className="p-2 text-slate-600 hover:bg-slate-100 rounded"><Eye className="w-4 h-4" /></Link><button title="Chỉnh sửa" onClick={() => editPost(post)} className="p-2 text-cyan-700 hover:bg-cyan-50 rounded"><Pencil className="w-4 h-4" /></button><button title="Xóa" onClick={() => void deletePost(post)} className="p-2 text-red-600 hover:bg-red-50 rounded"><Trash2 className="w-4 h-4" /></button></div></td></tr>)}{filteredPosts.length === 0 && <tr><td colSpan={4} className="p-8 text-center text-slate-500">{posts.length === 0 ? 'Chưa có bài viết nào.' : 'Không có bài viết phù hợp bộ lọc.'}</td></tr>}</tbody></table></div></section>
-      <aside className="order-1 xl:order-2"><form onSubmit={savePost} className="bg-white border border-slate-200 rounded-lg p-5 md:p-6 xl:sticky xl:top-5"><div className="flex justify-between items-center"><h2 className="font-bold text-lg">{formTitle}</h2>{editing ? <button type="button" title="Đóng biểu mẫu" onClick={resetForm} className="p-1 text-slate-500"><X className="w-5 h-5" /></button> : <Plus className="w-5 h-5 text-cyan-600" />}</div><div className="space-y-4 mt-5"><label className="block text-sm font-semibold">Tiêu đề<input required value={form.title} onChange={(event) => { const title = event.target.value; setForm((current) => ({ ...current, title, slug: generateSlug(title) })); checkDuplicateTitle(title); }} className="mt-1.5 w-full border border-slate-300 rounded-md px-3 py-2" />{titleWarning && <p className="mt-1 text-xs font-normal text-amber-600">{titleWarning}</p>}</label><label className="block text-sm font-semibold">Slug SEO<span className="mt-1.5 block w-full border border-slate-200 bg-slate-50 rounded-md px-3 py-2 text-sm text-slate-600">{form.slug || 'slug-bai-viet'}</span><span className="mt-1 block text-xs font-normal text-slate-500">xuancamhuonglamip.vn/tin-tuc/{form.slug || 'slug-bai-viet'}</span></label><label className="block text-sm font-semibold">Danh mục<select value={form.category} onChange={(event) => setField('category', event.target.value)} className="mt-1.5 w-full border border-slate-300 rounded-md px-3 py-2"><option value="Sự kiện">Sự kiện</option><option value="Hợp tác">Hợp tác</option><option value="Thị trường">Thị trường</option></select></label><label className="block text-sm font-semibold">Mô tả ngắn<textarea required rows={3} value={form.excerpt} onChange={(event) => setField('excerpt', event.target.value)} className="mt-1.5 w-full border border-slate-300 rounded-md px-3 py-2 resize-y" /></label><div><p className="text-sm font-semibold">Ảnh đại diện</p><div className="mt-1.5 flex gap-2"><input value={form.cover_image_url} onChange={(event) => setField('cover_image_url', event.target.value)} placeholder="Dán URL ảnh hoặc tải lên" className="min-w-0 flex-1 border border-slate-300 rounded-md px-3 py-2 text-sm" /><label title="Tải ảnh đại diện" className="cursor-pointer p-2.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200"><Upload className="w-4 h-4" /><input type="file" accept="image/*" onChange={(event) => void uploadImage(event)} className="sr-only" /></label></div>{form.cover_image_url && <img src={form.cover_image_url} alt="Xem trước ảnh đại diện" className="mt-3 w-full h-36 object-cover rounded-md" />}</div>
+      <aside className="order-1 xl:order-2"><form onSubmit={savePost} className="bg-white border border-slate-200 rounded-lg p-5 md:p-6 xl:sticky xl:top-5"><div className="flex justify-between items-center"><h2 className="font-bold text-lg">{formTitle}</h2>{editing ? <button type="button" title="Đóng biểu mẫu" onClick={resetForm} className="p-1 text-slate-500"><X className="w-5 h-5" /></button> : <Plus className="w-5 h-5 text-cyan-600" />}</div><div className="space-y-4 mt-5"><div className="flex gap-1 border-b border-slate-200" role="tablist">{(['vi', ...translationLanguages] as const).map((language) => <button key={language} type="button" role="tab" aria-selected={languageTab === language} onClick={() => setLanguageTab(language)} className={`px-3 py-2 text-sm font-bold border-b-2 ${languageTab === language ? 'border-cyan-600 text-cyan-700' : 'border-transparent text-slate-500 hover:text-slate-700'}`}>{language.toUpperCase()}</button>)}</div>{languageTab !== 'vi' && <button type="button" onClick={() => void translateAgain(languageTab)} className="w-full rounded-md border border-cyan-200 bg-cyan-50 px-3 py-2 text-sm font-semibold text-cyan-700 hover:bg-cyan-100">Dịch lại từ tiếng Việt</button>}<label className="block text-sm font-semibold">Tiêu đề<input required value={languageTab === 'vi' ? form.title : localizedFields.title} onChange={(event) => { const title = event.target.value; if (languageTab === 'vi') { setForm((current) => ({ ...current, title, slug: generateSlug(title) })); checkDuplicateTitle(title); } else setLocalizedField('title', title); }} className="mt-1.5 w-full border border-slate-300 rounded-md px-3 py-2" />{titleWarning && <p className="mt-1 text-xs font-normal text-amber-600">{titleWarning}</p>}</label><label className="block text-sm font-semibold">Slug SEO<span className="mt-1.5 block w-full border border-slate-200 bg-slate-50 rounded-md px-3 py-2 text-sm text-slate-600">{form.slug || 'slug-bai-viet'}</span><span className="mt-1 block text-xs font-normal text-slate-500">xuancamhuonglamip.vn/tin-tuc/{form.slug || 'slug-bai-viet'}</span></label><label className="block text-sm font-semibold">Danh mục<select value={form.category} onChange={(event) => setField('category', event.target.value)} className="mt-1.5 w-full border border-slate-300 rounded-md px-3 py-2"><option value="Sự kiện">Sự kiện</option><option value="Hợp tác">Hợp tác</option><option value="Thị trường">Thị trường</option></select></label><label className="block text-sm font-semibold">Mô tả ngắn<textarea required rows={3} value={localizedFields.excerpt} onChange={(event) => setLocalizedField('excerpt', event.target.value)} className="mt-1.5 w-full border border-slate-300 rounded-md px-3 py-2 resize-y" /></label><div><p className="text-sm font-semibold">Ảnh đại diện</p><div className="mt-1.5 flex gap-2"><input value={form.cover_image_url} onChange={(event) => setField('cover_image_url', event.target.value)} placeholder="Dán URL ảnh hoặc tải lên" className="min-w-0 flex-1 border border-slate-300 rounded-md px-3 py-2 text-sm" /><label title="Tải ảnh đại diện" className="cursor-pointer p-2.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200"><Upload className="w-4 h-4" /><input type="file" accept="image/*" onChange={(event) => void uploadImage(event)} className="sr-only" /></label></div>{form.cover_image_url && <img src={form.cover_image_url} alt="Xem trước ảnh đại diện" className="mt-3 w-full h-36 object-cover rounded-md" />}</div>
           <div>
             <div className="flex items-center justify-between mb-0">
               <label className="text-sm font-semibold">Nội dung bài viết</label>
@@ -348,23 +380,23 @@ export default function AdminNews() {
                   <button type="button" title="Chèn liên kết" onClick={() => applyFormat('link')} className="p-1.5 hover:bg-slate-200 rounded"><LinkIcon className="w-4 h-4" /></button>
                   <label title="Chèn ảnh vào nội dung" className="inline-flex cursor-pointer p-1.5 hover:bg-slate-200 rounded"><ImagePlus className="w-4 h-4" /><input type="file" accept="image/*" onChange={(event) => void uploadImage(event, true)} className="sr-only" /></label>
                 </div>
-                <textarea ref={textareaRef} required rows={10} value={form.content} onChange={(event) => handleContentChange(event.target.value)} onKeyDown={handleKeyDown} placeholder={'Viết nội dung theo từng đoạn.\n\nSử dụng thanh công cụ hoặc phím tắt để định dạng.\n\nẢnh trong bài sẽ được chèn tại vị trí con trỏ bằng nút bên dưới.'} className="w-full border border-slate-200 border-t-0 rounded-b-md px-3 py-2 resize-y" />
+                <textarea ref={textareaRef} required rows={10} value={localizedFields.content} onChange={(event) => languageTab === 'vi' ? handleContentChange(event.target.value) : setLocalizedField('content', event.target.value)} onKeyDown={handleKeyDown} placeholder={'Viết nội dung theo từng đoạn.\n\nSử dụng thanh công cụ hoặc phím tắt để định dạng.\n\nẢnh trong bài sẽ được chèn tại vị trí con trỏ bằng nút bên dưới.'} className="w-full border border-slate-200 border-t-0 rounded-b-md px-3 py-2 resize-y" />
               </>
             ) : (
               <div className="border border-slate-200 rounded-md p-4 min-h-[300px] prose prose-sm max-w-none">
-                {form.content ? <NewsContent content={form.content} /> : <p className="text-slate-400 italic">Chưa có nội dung.</p>}
+                {localizedFields.content ? <NewsContent content={localizedFields.content} /> : <p className="text-slate-400 italic">Chưa có nội dung.</p>}
               </div>
             )}
           </div>
           <label className="block text-sm font-semibold">SEO title
-            <input value={form.seo_title} onChange={(event) => setField('seo_title', event.target.value)} className="mt-1.5 w-full border border-slate-300 rounded-md px-3 py-2" />
+            <input value={localizedFields.seo_title} onChange={(event) => setLocalizedField('seo_title', event.target.value)} className="mt-1.5 w-full border border-slate-300 rounded-md px-3 py-2" />
             {form.seo_title && <span className="mt-1 block text-xs font-normal" style={{ color: form.seo_title.length > 70 ? '#dc2626' : form.seo_title.length >= 50 && form.seo_title.length <= 60 ? '#16a34a' : '#ca8a04' }}>{form.seo_title.length} ký tự{form.seo_title.length > 70 ? ' (quá dài)' : form.seo_title.length >= 50 && form.seo_title.length <= 60 ? ' (tốt)' : form.seo_title.length < 50 ? ' (nên thêm)' : ''}</span>}
           </label>
           <label className="block text-sm font-semibold">SEO description
-            <textarea rows={3} value={form.seo_description} onChange={(event) => setField('seo_description', event.target.value)} className="mt-1.5 w-full border border-slate-300 rounded-md px-3 py-2 resize-y" />
+            <textarea rows={3} value={localizedFields.seo_description} onChange={(event) => setLocalizedField('seo_description', event.target.value)} className="mt-1.5 w-full border border-slate-300 rounded-md px-3 py-2 resize-y" />
             {form.seo_description && <span className="mt-1 block text-xs font-normal" style={{ color: form.seo_description.length > 180 ? '#dc2626' : form.seo_description.length >= 140 && form.seo_description.length <= 160 ? '#16a34a' : '#ca8a04' }}>{form.seo_description.length} ký tự{form.seo_description.length > 180 ? ' (quá dài)' : form.seo_description.length >= 140 && form.seo_description.length <= 160 ? ' (tốt)' : form.seo_description.length < 140 ? ' (nên thêm)' : ''}</span>}
           </label>
           <label className="flex items-center justify-between gap-3 text-sm font-semibold">Xuất bản ngay<input type="checkbox" checked={form.status === 'published'} onChange={(event) => setForm((current) => ({ ...current, status: event.target.checked ? 'published' : 'draft' }))} className="h-5 w-5 accent-cyan-600" /></label><label className="block text-sm font-semibold">Ngày giờ đăng bài<input type="datetime-local" value={form.published_at} onChange={(event) => setField('published_at', event.target.value)} className="mt-1.5 w-full border border-slate-300 rounded-md px-3 py-2" /><span className="mt-1 block text-xs font-normal text-slate-500">{form.published_at ? new Date(form.published_at).toLocaleString('vi-VN') : 'Để trống sẽ lấy thời gian hiện tại'}</span></label><button disabled={saving} className="w-full py-3 rounded-md bg-cyan-600 hover:bg-cyan-700 disabled:opacity-60 text-white font-bold">{saving ? 'Đang lưu...' : editing ? 'Lưu thay đổi' : 'Tạo bài viết'}</button></div></form></aside>
-    </div>
+    </div><AdminJobs />
   </main>;
 }

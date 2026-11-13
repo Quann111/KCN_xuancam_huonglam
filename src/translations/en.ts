@@ -5,7 +5,7 @@ export const en = {
     viewAll: 'View all',
     submit: 'Send consultation request',
     sendNow: 'Send now',
-    readMore: 'View details',
+    readMore: 'View details', close: 'Close',
   },
   topBar: {
     address: 'No. 34, Lane 291, Le Loi Street, Hoang Van Thu Ward, Bac Giang City',
@@ -176,7 +176,7 @@ export const en = {
     title2: 'building the future',
     description: 'We are always looking for talented, passionate colleagues to build lasting value for the community and our clients.',
     cta: 'View open positions',
-    fullTime: 'Full-time',
+    fullTime: 'Full-time', apply: 'Apply / Contact',
   },
   contact: {
     label: 'Contact Us',
@@ -297,6 +297,7 @@ export const en = {
     viewInfo: 'View information',
   },
   newsPage: {
+    translationManual: 'Manual translation', translationLanguage: 'Editing language', translationSaveWarning: 'Some languages could not be translated; they will be retried later.',
     intro: 'Information on the project, infrastructure, investment activities and key events at Xuan Cam – Huong Lam Industrial Park.',
     loading: 'Loading news...',
     loadError: 'Unable to load the news list. Please try again later.',

@@ -5,7 +5,7 @@ export const zh = {
     viewAll: '查看全部',
     submit: '提交咨询请求',
     sendNow: '立即发送',
-    readMore: '查看详情',
+    readMore: '查看详情', close: '关闭',
   },
   topBar: {
     address: '北江市 黄文树坊 黎利路 291巷 34号',
@@ -176,7 +176,7 @@ export const zh = {
     title2: '共创未来',
     description: '我们一直在寻找有才华、有热情的伙伴，共同为社会和客户创造可持续的价值。',
     cta: '查看招聘职位',
-    fullTime: '全职',
+    fullTime: '全职', apply: '申请 / 联系',
   },
   contact: {
     label: '立即联系',
@@ -297,6 +297,7 @@ export const zh = {
     viewInfo: '查看信息',
   },
   newsPage: {
+    translationManual: '手动翻译', translationLanguage: '编辑语言', translationSaveWarning: '部分语言翻译失败，将在下次保存时重试。',
     intro: '关于春锦 – 香林工业园的项目、基础设施、投资活动及重要活动的信息。',
     loading: '正在加载新闻...',
     loadError: '暂时无法加载新闻列表，请稍后重试。',

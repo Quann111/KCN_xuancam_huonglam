@@ -10,7 +10,8 @@
     "build:app": "tsc && vite build",
     "preview": "vite preview",
     "lint": "tsc --noEmit",
-    "deploy": "npx gh-pages -d dist"
+    "deploy": "npx gh-pages -d dist",
+    "translate:news": "node --experimental-strip-types scripts/translate-existing-news.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.8",
