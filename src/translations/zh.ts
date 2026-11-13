@@ -8,7 +8,7 @@ export const zh = {
     readMore: '查看详情', close: '关闭',
   },
   topBar: {
-    address: '北江市 黄文树坊 黎利路 291巷 34号',
+    address: '北宁市 北江坊 黎利路 291巷 34号',
   },
   nav: {
     viTri: '区位',
@@ -23,7 +23,7 @@ export const zh = {
     lienHe: '联系我们',
   },
   hero: {
-    badge: '北宁省重点项目',
+    badge: '北宁市重点项目',
     titlePart1: '春锦',
     titlePart2: '– 香林工业园',
     description: '连接枢纽 – 创造繁荣。同步、现代化的基础设施，吸引高科技投资。',
@@ -50,7 +50,7 @@ export const zh = {
     title1: '连接',
     title2: '',
     titleHighlight: '重点经济区的枢纽',
-    description1: '项目位于北宁省春锦乡，地处河内东北部工业三角（太原 – 北宁 – 北江）的中心。原行政区划隶属北江省协和县。',
+    description1: '项目位于北宁市春锦乡，地处河内东北部工业三角（太原 – 北宁 – 北江）的中心。原行政区划隶属北江省协和县。',
     distanceToHanoi: '距河内市中心',
     distanceToBacNinh: '距北宁市',
     distanceToBacGiang: '距北江市',

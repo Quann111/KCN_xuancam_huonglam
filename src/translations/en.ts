@@ -8,7 +8,7 @@ export const en = {
     readMore: 'View details', close: 'Close',
   },
   topBar: {
-    address: 'No. 34, Lane 291, Le Loi Street, Hoang Van Thu Ward, Bac Giang City',
+    address: 'No. 34, Lane 291, Le Loi Street, Bac Giang Ward, Bac Ninh City',
   },
   nav: {
     viTri: 'LOCATION',
@@ -50,7 +50,7 @@ export const en = {
     title1: 'The connection hub',
     title2: 'of the',
     titleHighlight: 'key economic region',
-    description1: 'The project is located in Xuan Cam Commune, Bac Ninh Province, at the heart of the industrial triangle northeast of Hanoi: Thai Nguyen – Bac Ninh – Bac Giang. The area formerly belonged to Hiep Hoa District, Bac Giang Province.',
+    description1: 'The project is located in Xuan Cam Commune, Bac Ninh City, at the heart of the industrial triangle northeast of Hanoi: Thai Nguyen – Bac Ninh – Bac Giang. The area formerly belonged to Hiep Hoa District, Bac Giang Province.',
     distanceToHanoi: 'To Hanoi City Center',
     distanceToBacNinh: 'To Bac Ninh City',
     distanceToBacGiang: 'To Bac Giang City',
