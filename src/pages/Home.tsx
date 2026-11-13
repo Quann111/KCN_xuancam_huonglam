@@ -11,8 +11,9 @@ import { Language } from '../translations';
 import { AnimatedNumber } from '../hooks/useCountUp';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { formatNewsDate } from '../lib/news-utils';
-import { NewsPost, supabase } from '../lib/supabase';
+import { formatNewsDate, localizeJob, localizePost } from '../lib/news-utils';
+import { JobPost, NewsPost, supabase } from '../lib/supabase';
+import NewsContent from '../components/NewsContent';
 import SeoHead from '../components/SeoHead';
 import { ORGANIZATION_LOGO, ORGANIZATION_NAME, SITE_URL } from '../lib/site-seo';
 
@@ -42,6 +43,8 @@ export default function Home() {
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('');
   const [latestPosts, setLatestPosts] = useState<NewsPost[]>([]);
+  const [jobs, setJobs] = useState<JobPost[]>([]);
+  const [selectedJob, setSelectedJob] = useState<JobPost | null>(null);
 
   const stats = [
     { label: t.stats.scale, value: 102.85, suffix: ' ha', icon: Map, color: 'bg-blue-500' },
@@ -112,9 +115,24 @@ export default function Home() {
         .eq('status', 'published')
         .order('published_at', { ascending: false })
         .limit(3);
-      setLatestPosts((data ?? []) as NewsPost[]);
+      setLatestPosts(((data ?? []) as NewsPost[]).map((post) => localizePost(post, language)));
     };
     void loadLatestPosts();
+  }, [language]);
+
+  useEffect(() => {
+    if (!supabase) { setJobs([]); return; }
+    void (async () => {
+      const { data, error } = await supabase.from('job_posts').select('*').eq('status', 'published').order('sort_order', { ascending: true });
+      if (error) { setJobs([]); return; }
+      setJobs(((data ?? []) as JobPost[]).map((job) => localizeJob(job, language)));
+    })();
+  }, [language]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => { if (event.key === 'Escape') setSelectedJob(null); };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
   }, []);
 
   useEffect(() => {
@@ -861,23 +879,24 @@ export default function Home() {
                 <p className="text-white/80 text-lg font-light leading-relaxed">
                   {t.recruitment.description}
                 </p>
-                <button className="bg-white text-cyan-600 px-10 py-4 rounded-2xl font-bold hover:bg-slate-900 hover:text-white transition-all shadow-xl shadow-cyan-900/10">
+                <button onClick={() => document.getElementById('job-list')?.scrollIntoView({ behavior: 'smooth', block: 'center' })} className="bg-white text-cyan-600 px-10 py-4 rounded-2xl font-bold hover:bg-slate-900 hover:text-white transition-all shadow-xl shadow-cyan-900/10">
                   {t.recruitment.cta}
                 </button>
               </motion.div>
-              <div className="lg:w-1/2 grid grid-cols-1 gap-4 w-full">
-                {t.home.jobs.map((job, index) => (
+              <div id="job-list" className="lg:w-1/2 grid grid-cols-1 gap-4 w-full">
+                {(jobs.length ? jobs : t.home.jobs.map((job, index) => ({ id: `fallback-${index}`, title: job.pos, location: job.loc, employment_type: 'full_time', description: '', sort_order: index, status: 'published' as const, created_at: '', updated_at: '' }))).map((job, index) => (
                   <motion.div 
-                    key={job.pos}
+                    key={job.id}
                     initial={{ opacity: 0, x: 50 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.3 + index * 0.1 }}
+                    onClick={() => setSelectedJob(job as JobPost)}
                     className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-3xl flex justify-between items-center group hover:bg-white transition-all cursor-pointer"
                   >
                     <div className="space-y-1">
-                      <h4 className="text-white font-bold text-lg group-hover:text-slate-900 transition-colors">{job.pos}</h4>
-                      <div className="text-white/60 text-xs group-hover:text-slate-400 transition-colors uppercase tracking-widest font-bold">{t.recruitment.fullTime} • {job.loc}</div>
+                      <h4 className="text-white font-bold text-lg group-hover:text-slate-900 transition-colors">{'title' in job ? job.title : job.pos}</h4>
+                      <div className="text-white/60 text-xs group-hover:text-slate-400 transition-colors uppercase tracking-widest font-bold">{t.recruitment.fullTime} • {'location' in job ? job.location : job.loc}</div>
                     </div>
                     <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white group-hover:bg-cyan-500 transition-all">
                       <ArrowRight className="w-5 h-5" />
@@ -889,6 +908,16 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      <AnimatePresence>
+        {selectedJob && <motion.div role="dialog" aria-modal="true" onClick={() => setSelectedJob(null)} className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} onClick={(event) => event.stopPropagation()} className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white p-7 shadow-2xl md:p-10">
+            <div className="flex items-start justify-between gap-4"><div><h2 className="text-3xl font-bold text-slate-900">{selectedJob.title}</h2><p className="mt-2 text-sm font-bold uppercase tracking-wider text-cyan-700">{selectedJob.location} · {selectedJob.employment_type === 'full_time' ? t.recruitment.fullTime : selectedJob.employment_type}</p></div><button aria-label="Close" onClick={() => setSelectedJob(null)} className="rounded-full p-2 text-slate-500 hover:bg-slate-100"><X /></button></div>
+            <div className="prose prose-slate mt-7 max-w-none"><NewsContent content={selectedJob.description || t.recruitment.description} /></div>
+            <div className="mt-8 flex flex-wrap justify-end gap-3"><button onClick={() => setSelectedJob(null)} className="rounded-xl border border-slate-300 px-5 py-3 font-bold text-slate-700">{t.common.close}</button><button onClick={() => { setSelectedJob(null); scrollToSection('lien-he'); }} className="rounded-xl bg-cyan-600 px-5 py-3 font-bold text-white">{t.recruitment.apply}</button></div>
+          </motion.div>
+        </motion.div>}
+      </AnimatePresence>
 
       {/* LIÊN HỆ Section */}
       <section id="lien-he" className="py-24 bg-white">

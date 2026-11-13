@@ -5,7 +5,7 @@ export const vi = {
     viewAll: 'Xem tất cả',
     submit: 'Gửi yêu cầu tư vấn',
     sendNow: 'Gửi ngay',
-    readMore: 'Xem chi tiết',
+    readMore: 'Xem chi tiết', close: 'Đóng',
   },
   topBar: {
     address: 'Số 34, ngõ 291, đường Lê Lợi, P. Hoàng Văn Thụ, TP. Bắc Giang',
@@ -176,7 +176,7 @@ export const vi = {
     title2: 'kiến tạo tương lai',
     description: 'Chúng tôi luôn tìm kiếm những cộng sự tài năng, nhiệt huyết để cùng xây dựng những giá trị bền vững cho cộng đồng và khách hàng.',
     cta: 'Xem các vị trí đang tuyển',
-    fullTime: 'Toàn thời gian',
+    fullTime: 'Toàn thời gian', apply: 'Ứng tuyển / Liên hệ',
   },
   contact: {
     label: 'Liên hệ ngay',
@@ -297,6 +297,7 @@ export const vi = {
     viewInfo: 'Xem thông tin',
   },
   newsPage: {
+    translationManual: 'Bản dịch thủ công', translationLanguage: 'Ngôn ngữ biên tập', translationSaveWarning: 'Một số ngôn ngữ chưa dịch được; sẽ thử lại lần sau.',
     intro: 'Thông tin về dự án, hạ tầng, hoạt động đầu tư và các sự kiện nổi bật tại KCN Xuân Cẩm - Hương Lâm.',
     loading: 'Đang tải tin tức...',
     loadError: 'Chưa thể tải danh sách tin tức. Vui lòng thử lại sau.',

@@ -5,7 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import NewsContent from '../components/NewsContent';
 import PublicLayout from '../components/PublicLayout';
 import SeoHead from '../components/SeoHead';
-import { formatNewsDate, getAbsoluteNewsUrl } from '../lib/news-utils';
+import { formatNewsDate, getAbsoluteNewsUrl, localizePost } from '../lib/news-utils';
 import { ORGANIZATION_LOGO, ORGANIZATION_NAME } from '../lib/site-seo';
 import { NewsPost, supabase } from '../lib/supabase';
 
@@ -20,11 +20,11 @@ export default function NewsDetail() {
       const client = supabase;
       if (!client) { setLoading(false); return; }
       const { data } = await client.from('news_posts').select('*').eq('slug', slug ?? '').eq('status', 'published').maybeSingle();
-      setPost(data as NewsPost | null);
+      setPost(data ? localizePost(data as NewsPost, language) : null);
       setLoading(false);
     };
     void loadPost();
-  }, [slug]);
+  }, [slug, language]);
 
   if (loading) return <PublicLayout><div className="container mx-auto px-4 py-24 text-slate-500">{t.newsPage.loadingPost}</div></PublicLayout>;
   if (!post) return <PublicLayout><SeoHead title="Không tìm thấy bài viết | KCN Xuân Cẩm - Hương Lâm" description="Bài viết không tồn tại hoặc chưa được xuất bản." path="/tin-tuc" /><div className="container mx-auto px-4 py-24"><h1 className="text-3xl font-bold">{t.newsPage.notFoundTitle}</h1><p className="mt-3 text-slate-600">{t.newsPage.notFoundDesc}</p><Link to="/tin-tuc" className="mt-7 inline-flex items-center gap-2 font-bold text-cyan-600"><ChevronLeft className="size-4" />{t.newsPage.backToNews}</Link></div></PublicLayout>;

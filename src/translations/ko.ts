@@ -5,7 +5,7 @@ export const ko = {
     viewAll: '전체 보기',
     submit: '상담 요청 보내기',
     sendNow: '지금 보내기',
-    readMore: '자세히 보기',
+    readMore: '자세히 보기', close: '닫기',
   },
   topBar: {
     address: '박장시 호앙반뚜동 레로이로 291골목 34번지',
@@ -176,7 +176,7 @@ export const ko = {
     title2: '팀에 합류하세요',
     description: '지역사회와 고객을 위해 지속 가능한 가치를 함께 만들어 갈 재능 있고 열정적인 동료를 언제나 찾고 있습니다.',
     cta: '채용 중인 직무 보기',
-    fullTime: '정규직',
+    fullTime: '정규직', apply: '지원 / 문의',
   },
   contact: {
     label: '지금 문의하세요',
@@ -297,6 +297,7 @@ export const ko = {
     viewInfo: '정보 보기',
   },
   newsPage: {
+    translationManual: '수동 번역', translationLanguage: '편집 언어', translationSaveWarning: '일부 언어를 번역하지 못했습니다. 다음 저장 때 다시 시도합니다.',
     intro: '쑤언깜 – 흐엉람 산업단지의 프로젝트, 인프라, 투자 활동 및 주요 행사 소식.',
     loading: '뉴스를 불러오는 중...',
     loadError: '뉴스 목록을 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.',

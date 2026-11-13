@@ -5,7 +5,7 @@ export const ja = {
     viewAll: 'すべて見る',
     submit: 'ご相談を送信',
     sendNow: '今すぐ送信',
-    readMore: '詳細を見る',
+    readMore: '詳細を見る', close: '閉じる',
   },
   topBar: {
     address: 'バクザン市 ホアンヴァントゥ区 レロイ通り 291路地 34番地',
@@ -176,7 +176,7 @@ export const ja = {
     title2: '参加しませんか',
     description: '地域社会とお客様のために持続的な価値を共に築く、才能と情熱にあふれた仲間を常に募集しています。',
     cta: '募集中の職種を見る',
-    fullTime: '正社員',
+    fullTime: '正社員', apply: '応募 / お問い合わせ',
   },
   contact: {
     label: 'お問い合わせ',
@@ -297,6 +297,7 @@ export const ja = {
     viewInfo: '情報を見る',
   },
   newsPage: {
+    translationManual: '手動翻訳', translationLanguage: '編集言語', translationSaveWarning: '一部の言語を翻訳できませんでした。次回保存時に再試行します。',
     intro: 'スアンカム – フオンラム工業団地のプロジェクト、インフラ、投資活動、主なイベントに関する情報。',
     loading: 'ニュースを読み込み中...',
     loadError: 'ニュース一覧を読み込めませんでした。後ほど再度お試しください。',
