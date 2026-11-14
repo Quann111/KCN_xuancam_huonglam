@@ -1,0 +1,81 @@
+{
+  "_calendar-days-DZvPN1ss.js": {
+    "file": "assets/calendar-days-DZvPN1ss.js",
+    "name": "calendar-days",
+    "imports": [
+      "index.html"
+    ]
+  },
+  "_chevron-left-BaJ1TF_c.js": {
+    "file": "assets/chevron-left-BaJ1TF_c.js",
+    "name": "chevron-left",
+    "imports": [
+      "index.html"
+    ]
+  },
+  "_eye-BZfV88z4.js": {
+    "file": "assets/eye-BZfV88z4.js",
+    "name": "eye",
+    "imports": [
+      "index.html"
+    ]
+  },
+  "index.html": {
+    "file": "assets/index-Ddb_yH_j.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "dynamicImports": [
+      "src/pages/NewsList.tsx",
+      "src/pages/NewsDetail.tsx",
+      "src/pages/AdminNews.tsx",
+      "src/pages/AdminNewsPreview.tsx"
+    ],
+    "css": [
+      "assets/index-DYSDzTXu.css"
+    ]
+  },
+  "src/pages/AdminNews.tsx": {
+    "file": "assets/AdminNews-BUgk9EFj.js",
+    "name": "AdminNews",
+    "src": "src/pages/AdminNews.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_eye-BZfV88z4.js"
+    ]
+  },
+  "src/pages/AdminNewsPreview.tsx": {
+    "file": "assets/AdminNewsPreview-B7LYuWmh.js",
+    "name": "AdminNewsPreview",
+    "src": "src/pages/AdminNewsPreview.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_eye-BZfV88z4.js",
+      "_chevron-left-BaJ1TF_c.js",
+      "_calendar-days-DZvPN1ss.js"
+    ]
+  },
+  "src/pages/NewsDetail.tsx": {
+    "file": "assets/NewsDetail-8en-C2T1.js",
+    "name": "NewsDetail",
+    "src": "src/pages/NewsDetail.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_chevron-left-BaJ1TF_c.js",
+      "_calendar-days-DZvPN1ss.js"
+    ]
+  },
+  "src/pages/NewsList.tsx": {
+    "file": "assets/NewsList-U2DDJ1gI.js",
+    "name": "NewsList",
+    "src": "src/pages/NewsList.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html",
+      "_calendar-days-DZvPN1ss.js"
+    ]
+  }
+}
